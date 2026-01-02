@@ -98,9 +98,15 @@
     }
 
     .sidebar-brand {
-      font-size: 22px; /* larger logo */
+      font-size: 22px;
       font-weight: 700;
       white-space: nowrap;
+      color: var(--text);
+      text-decoration: none; /* keep logo looking like text */
+    }
+
+    .sidebar-brand:hover {
+      text-decoration: none;
     }
 
     .app.collapsed .sidebar-brand {
@@ -112,7 +118,7 @@
     }
 
     .nav-title {
-      font-size: 16px; /* larger Tools header */
+      font-size: 16px;
       font-weight: 700;
       padding: 4px 10px;
       margin-bottom: 6px;
@@ -148,19 +154,18 @@
     }
 
     .nav a .label {
-      font-size: 13px; /* slightly larger */
-      color: var(--muted);
+      display: inline;
     }
 
     .nav a.active {
       background: var(--accent-soft);
       color: var(--accent);
-      font-weight: 700; /* bold active tool */
+      font-weight: 700;
     }
 
     .nav a.active .icon,
     .nav a.active .label {
-      color: var(--accent); /* ensure label matches icon color */
+      color: var(--accent);
     }
 
     .app.collapsed .nav a {
@@ -187,7 +192,30 @@
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      gap: 12px;
       padding: 0 16px;
+    }
+
+    .toolbox-link {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: var(--accent); /* orange / yellow restored */
+      color: #ffffff; /* white text */
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none; /* no underline */
+    }
+
+    [data-theme="dark"] .toolbox-link {
+      color: #1e1e1e; /* black text on yellow */
+    }
+
+    .toolbox-link:hover {
+      opacity: 0.9;
+      text-decoration: none;
     }
 
     #themeToggle {
@@ -246,7 +274,7 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 4px;
-      padding: 20px; /* more breathing room */
+      padding: 20px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px 20px;
@@ -259,12 +287,12 @@
     }
 
     .label {
-      font-size: 12px;
+      font-size: 13px;
       color: var(--muted);
     }
 
     .value {
-      font-size: 18px; /* larger stat values */
+      font-size: 18px;
       font-weight: 600;
     }
 
@@ -311,7 +339,7 @@
     <aside class="sidebar">
       <div class="sidebar-header">
         <button class="hamburger" id="sidebarToggle"><i class="fa-solid fa-bars"></i></button>
-        <div class="sidebar-brand">Rajanand</div>
+        <a class="sidebar-brand" href="https://rajanand.github.io/tools">Rajanand</a>
       </div>
 
       <div class="nav-section">
@@ -328,6 +356,7 @@
     <div class="main">
 
       <header class="topbar">
+        <a href="https://rajanand.org/tools" class="toolbox-link"><i class="fa-solid fa-toolbox"></i>Toolbox</a>
         <button id="themeToggle" aria-label="Toggle theme"><i class="fa-regular fa-moon"></i></button>
       </header>
 
@@ -350,6 +379,7 @@
 
       <footer>
         <div class="socials">
+          <a href="https://github.com/rajanand/tools/tree/main/word-count" title="Source Code"><i class="fa-solid fa-code"></i></a>
           <a href="https://rajanand.org/tools" title="Tools"><i class="fa-solid fa-globe"></i></a>
           <a href="https://x.com/iRajanand" title="X"><i class="fa-brands fa-x-twitter"></i></a>
           <a href="https://www.linkedin.com/in/iRajanand" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
