@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ===== CHANGE THIS ===== -->
+  <title><!-- TOOL NAME --> · Rajanand Tools</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <style>
+    /* ===============================
+       Theme tokens (DO NOT CHANGE)
+       =============================== */
+    :root {
+      --canvas: #f3f3f3;
+      --panel: #ffffff;
+      --sidebar-bg: #f3f3f3;
+      --topbar-bg: #f3f3f3;
+
+      --text: #1f2328;
+      --muted: #6e7781;
+      --border: #d0d7de;
+
+      --accent: #F54E00;
+      --accent-soft: rgba(245, 78, 0, 0.14);
+    }
+
+    [data-theme="dark"] {
+      --canvas: #1e1e1e;
+      --panel: #252526;
+      --sidebar-bg: #252526;
+      --topbar-bg: #252526;
+
+      --text: #d4d4d4;
+      --muted: #9da0a6;
+      --border: #3c3c3c;
+
+      --accent: #F9BD2B;
+      --accent-soft: rgba(249, 189, 43, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--canvas);
+      color: var(--text);
+    }
+
+    /* ===============================
+       Layout
+       =============================== */
+    .app {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: 100vh;
+    }
+
+    .app.collapsed {
+      grid-template-columns: 56px 1fr;
+    }
+
+    /* ===============================
+       Sidebar
+       =============================== */
+    .sidebar {
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 12px 8px;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 6px;
+    }
+
+    .hamburger {
+      width: 28px;
+      height: 28px;
+      border: 1px solid var(--border);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .sidebar-brand {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .app.collapsed .sidebar-brand {
+      display: none;
+    }
+
+    .nav-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 12px 0 6px;
+      padding-left: 10px;
+    }
+
+    .nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 4px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .nav a.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .app.collapsed .nav a {
+      justify-content: center;
+    }
+
+    .app.collapsed .nav .label {
+      display: none;
+    }
+
+    /* ===============================
+       Top bar
+       =============================== */
+    .topbar {
+      height: 48px;
+      background: var(--topbar-bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+    }
+
+    .toolbox-link {
+      background: var(--accent);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    [data-theme="dark"] .toolbox-link {
+      color: #1e1e1e;
+    }
+
+    #themeToggle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    /* ===============================
+       Main content
+       =============================== */
+    .content {
+      padding: 24px;
+      max-width: 1100px;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+
+    /* ===============================
+       Footer
+       =============================== */
+    footer {
+      margin-top: auto;
+      background: var(--topbar-bg);
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .socials a {
+      margin-left: 14px;
+      color: var(--muted);
+      font-size: 16px;
+      text-decoration: none;
+    }
+
+    .socials a:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+
+<body>
+<div class="app" id="app">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <button class="hamburger" id="sidebarToggle">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <a class="sidebar-brand" href="https://rajanand.github.io/tools">Rajanand</a>
+    </div>
+
+    <div class="nav-title">Tools</div>
+    <nav class="nav">
+      <!-- ===== CHANGE THIS ===== -->
+      <a class="active">
+        <span class="icon"><i class="fa-regular fa-file-lines"></i></span>
+        <span class="label"><!-- TOOL NAME --></span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- ===== Main ===== -->
+  <div class="main">
+    <header class="topbar">
+      <a href="https://rajanand.org/tools" class="toolbox-link">
+        <i class="fa-solid fa-toolbox"></i> Toolbox
+      </a>
+      <button id="themeToggle">
+        <i class="fa-regular fa-moon"></i>
+      </button>
+    </header>
+
+    <main class="content">
+      <!-- ===== CHANGE THIS ===== -->
+      <h1><!-- TOOL NAME --></h1>
+
+      <!-- ===== TOOL UI GOES HERE ===== -->
+    </main>
+
+    <footer>
+      <div class="socials">
+        <!-- ===== CHANGE SOURCE LINK ===== -->
+        <a href="#"><i class="fa-solid fa-code"></i></a>
+        <a href="https://rajanand.org/tools"><i class="fa-solid fa-globe"></i></a>
+        <a href="https://github.com/rajanand"><i class="fa-brands fa-github"></i></a>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script>
+  /* Theme toggle */
+  const toggle = document.getElementById('themeToggle');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const stored = localStorage.getItem('theme');
+
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    toggle.innerHTML = t === 'dark'
+      ? '<i class="fa-regular fa-sun"></i>'
+      : '<i class="fa-regular fa-moon"></i>';
+  }
+
+  applyTheme(stored || (prefersDark ? 'dark' : 'light'));
+
+  toggle.onclick = () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark'
+      ? 'light' : 'dark';
+    localStorage.setItem('theme', next);
+    applyTheme(next);
+  };
+
+  /* Sidebar collapse */
+  document.getElementById('sidebarToggle').onclick = () => {
+    document.getElementById('app').classList.toggle('collapsed');
+  };
+</script>
+
+</body>
+</html>

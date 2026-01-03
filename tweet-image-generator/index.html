@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tweet Image Generator · Rajanand Tools</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <style>
+    :root {
+      --canvas: #f3f3f3;
+      --panel: #ffffff;
+      --topbar-bg: #f3f3f3;
+      --text: #1f2328;
+      --muted: #6e7781;
+      --border: #d0d7de;
+      --accent: #F54E00;
+      --link: #1d9bf0;
+    }
+
+    [data-theme="dark"] {
+      --canvas: #1e1e1e;
+      --panel: #252526;
+      --topbar-bg: #252526;
+      --text: #d4d4d4;
+      --muted: #9da0a6;
+      --border: #3c3c3c;
+      --accent: #F9BD2B;
+      --link: #1d9bf0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "TwitterChirp", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--canvas);
+      color: var(--text);
+    }
+
+    .app { min-height: 100vh; display: flex; flex-direction: column; }
+
+    .topbar {
+      height: 48px;
+      background: var(--topbar-bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+    }
+
+    .logo-link {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .toolbox-link {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: var(--accent);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    [data-theme="dark"] .toolbox-link { color: #1e1e1e; }
+
+    #themeToggle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: transparent;
+      cursor: pointer;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    main {
+      padding: 24px;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    h1 { font-size: 22px; margin-bottom: 16px; }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 35% 65%;
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    label { font-size: 13px; color: var(--muted); display: block; margin-top: 10px; }
+
+    input, textarea, select, button {
+      width: 100%;
+      margin-top: 4px;
+      padding: 8px;
+      font-size: 13px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+    }
+
+    textarea { min-height: 120px; resize: vertical; }
+
+    button.primary { background: var(--accent); color: #fff; border: none; margin-top: 14px; cursor: pointer; }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .padding-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .export-wrap {
+      display: block;
+      width: 100%;
+      padding: 24px;
+      background: #1d9bf0;
+      border-radius: 18px;
+    }
+
+    .tweet {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      background: var(--panel);
+    }
+
+    .tweet-header { display: flex; gap: 12px; align-items: flex-start; }
+    .avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: #ccc; }
+
+    .name-line { display: flex; align-items: center; gap: 6px; line-height: 1.2; }
+    .name { font-weight: 700; }
+    .handle { color: var(--muted); font-size: 14.5px; }
+
+    .tweet-text { margin: 12px 0; white-space: pre-wrap; }
+    .tweet-text span { color: var(--link); }
+
+    .tweet-meta { color: var(--muted); font-size: 13px; display: flex; gap: 6px; flex-wrap: wrap; }
+    .tweet-sep { height: 1px; background: var(--border); margin: 12px 0; }
+
+    .tweet-actions {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .tweet-actions span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .tweet-actions i { width: 14px; text-align: center; }
+
+    .badge-x { width: 18px; height: 18px; }
+
+    footer {
+      margin-top: auto;
+      background: var(--topbar-bg);
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .socials a { margin-left: 14px; color: var(--muted); font-size: 16px; text-decoration: none; }
+    .socials a:hover { color: var(--accent); }
+
+    @media (max-width: 900px) {
+      .tool-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <header class="topbar">
+    <a href="https://rajanand.org/tools" class="logo-link">Rajanand</a>
+    <div style="flex:1"></div>
+    <a href="https://rajanand.org/tools" class="toolbox-link"><i class="fa-solid fa-toolbox"></i>Toolbox</a>
+    <button id="themeToggle"><i class="fa-regular fa-moon"></i></button>
+  </header>
+
+  <main>
+    <h1>Tweet Image Generator</h1>
+
+    <div class="tool-grid">
+      <div class="panel">
+        <label>Name</label>
+        <input id="name" value="Rajanand" />
+
+        <label>Handle</label>
+        <input id="handle" value="iRajanand" />
+
+        <label>Tweet Text</label>
+        <textarea id="text">Thank you for using my tool.
+https://rajanand.org/tools</textarea>
+
+        <label>Avatar Upload</label>
+        <input type="file" id="avatarUpload" accept="image/*" />
+
+        <label>Date & Time</label>
+        <input type="datetime-local" id="datetime" />
+
+        <label>Badge</label>
+        <div style="display:flex; gap:12px; margin-top:6px;">
+          <label style="display:flex; align-items:center; gap:4px;"><input type="radio" name="badge" value="blue" checked> Blue</label>
+          <label style="display:flex; align-items:center; gap:4px;"><input type="radio" name="badge" value="grey"> Grey</label>
+          <label style="display:flex; align-items:center; gap:4px;"><input type="radio" name="badge" value="gold"> Gold</label>
+          <label style="display:flex; align-items:center; gap:4px;"><input type="radio" name="badge" value="none"> None</label>
+        </div>
+
+        <label>Engagement Metrics</label>
+        <div class="metrics-row">
+          <div>
+            <label style="font-size:12px; margin-top:0">Replies</label>
+            <input id="mReply" type="number" value="21" />
+          </div>
+          <div>
+            <label style="font-size:12px; margin-top:0">Reposts</label>
+            <input id="mRT" type="number" value="15" />
+          </div>
+          <div>
+            <label style="font-size:12px; margin-top:0">Likes</label>
+            <input id="mLike" type="number" value="85" />
+          </div>
+          <div>
+            <label style="font-size:12px; margin-top:0">Saves</label>
+            <input id="mSave" type="number" value="37" />
+          </div>
+        </div>
+
+        <label><input type="checkbox" id="padEnabled" checked style="width:auto;margin-right:6px;" /> Image Padding</label>
+        <div class="padding-row">
+          <input id="padSize" type="number" value="24" />
+          <input id="padColor" type="color" value="#1d9bf0" />
+        </div>
+
+        <label>Views</label>
+        <input id="mViews" type="text" value="1.3K" />
+
+        <div style="display:flex; gap:8px; margin-top:14px;">
+        <button class="primary" onclick="downloadTweet()">Download PNG</button>
+        <button class="primary" style="background:#444" onclick="copyTweet()">Copy Image</button>
+      </div>
+      </div>
+
+      <div class="panel">
+        <div id="exportWrap" class="export-wrap">
+          <div id="tweet" class="tweet">
+            <div class="tweet-header">
+              <img id="avatar" class="avatar" crossorigin="anonymous" />
+              <div style="flex:1">
+                <div class="name-line">
+                  <span id="pName" class="name"></span>
+                  <span id="pBadge"></span>
+                </div>
+                <div id="pHandle" class="handle"></div>
+              </div>
+              <div class="handle">•••</div>
+            </div>
+
+            <div id="pText" class="tweet-text"></div>
+            <div id="pMeta" class="tweet-meta"></div>
+            <div class="tweet-sep"></div>
+
+            <div class="tweet-actions">
+              <span><i class="fa-regular fa-comment"></i><span id="pReply">21</span></span>
+              <span><i class="fa-solid fa-retweet"></i><span id="pRT">15</span></span>
+              <span><i class="fa-regular fa-heart"></i><span id="pLike">85</span></span>
+              <span><i class="fa-regular fa-bookmark"></i><span id="pSave">37</span></span>
+              <span><i class="fa-solid fa-arrow-up-from-bracket"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+        <div class="socials">
+          <a href="https://github.com/rajanand/tools/tree/main/tweet-image-generator" title="Source Code"><i class="fa-solid fa-code"></i></a>
+          <a href="https://rajanand.org/tools" title="Tools"><i class="fa-solid fa-globe"></i></a>
+          <a href="https://x.com/iRajanand" title="X"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="https://www.linkedin.com/in/iRajanand" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+          <a href="https://github.com/rajanand" title="GitHub"><i class="fa-brands fa-github"></i></a>
+          <a href="https://rajanand.substack.com/welcome" title="Substack"><i class="fa-regular fa-envelope"></i></a>
+        </div>
+      </footer>
+</div>
+
+<script>
+  const nameInput = document.getElementById('name');
+  const handleInput = document.getElementById('handle');
+  const textInput = document.getElementById('text');
+  // badge handled via radio buttons
+  const dateInput = document.getElementById('datetime');
+  const avatarImg = document.getElementById('avatar');
+
+  const mReply = document.getElementById('mReply');
+  const mRT = document.getElementById('mRT');
+  const mLike = document.getElementById('mLike');
+  const mSave = document.getElementById('mSave');
+  const mViews = document.getElementById('mViews');
+
+  const padEnabled = document.getElementById('padEnabled');
+  const padSize = document.getElementById('padSize');
+  const padColor = document.getElementById('padColor');
+  const exportWrap = document.getElementById('exportWrap');
+
+  dateInput.value = new Date().toISOString().slice(0, 16);
+
+  function linkify(text) {
+    return text.replace(/(https?:\/\/[^\s]+)/g, '<span>$1</span>');
+  }
+
+  function formatMeta(dt) {
+    const d = new Date(dt);
+    const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    const date = d.toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+    return `${time} · ${date} · ${mViews.value} Views`;
+  }
+
+  function update() {
+    document.getElementById('pName').textContent = nameInput.value;
+    document.getElementById('pHandle').textContent = '@' + handleInput.value;
+    document.getElementById('pText').innerHTML = linkify(textInput.value);
+    document.getElementById('pMeta').textContent = formatMeta(dateInput.value);
+
+    document.getElementById('pReply').textContent = mReply.value;
+    document.getElementById('pRT').textContent = mRT.value;
+    document.getElementById('pLike').textContent = mLike.value;
+    document.getElementById('pSave').textContent = mSave.value;
+
+    exportWrap.style.padding = padSize.value + 'px';
+    exportWrap.style.background = padEnabled.checked ? padColor.value : 'transparent';
+
+    const badge = document.querySelector('input[name="badge"]:checked').value;
+    const badgeEl = document.getElementById('pBadge');
+    badgeEl.innerHTML = '';
+
+    if (badge !== 'none') {
+      badgeEl.innerHTML = `<svg class="badge-x" viewBox="0 0 24 24" aria-hidden="true"><path fill="${badge==='blue'?'#1d9bf0':badge==='gold'?'#FFD400':'#9da0a6'}" d="M22.25 12l-2.84-2.78.66-3.91-3.92-.64L12 2l-4.15 2.67-3.92.64.66 3.91L1.75 12l2.84 2.78-.66 3.91 3.92.64L12 22l4.15-2.67 3.92-.64-.66-3.91z"/><path fill="#ffffff" d="M10.2 13.9l-2.2-2.2 1.2-1.2 1.6 1.6 4-4 1.2 1.2-4.8 4.8z"/></svg>`;
+    }
+
+    avatarImg.src = 'https://unavatar.io/x/' + handleInput.value;
+  }
+
+  document.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', update));
+
+  document.getElementById('avatarUpload').addEventListener('change', e => {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader(); r.onload = () => avatarImg.src = r.result; r.readAsDataURL(f);
+  });
+
+  function downloadTweet() {
+    html2canvas(exportWrap, { scale: 2, useCORS: true, backgroundColor: null }).then(c => {
+      const a = document.createElement('a');
+      const d = new Date();
+      const ts = d.toISOString().replace(/[-:T]/g, '').slice(0, 12);
+      a.download = `tweet-image-${ts}.png`;
+      a.href = c.toDataURL('image/png');
+      a.click();
+    });
+  }
+
+  async function copyTweet() {
+    const canvas = await html2canvas(exportWrap, { scale: 2, useCORS: true, backgroundColor: null });
+    canvas.toBlob(async blob => {
+      try {
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ]);
+      } catch (e) {
+        alert('Copy failed. Browser may not support image clipboard.');
+      }
+    });
+  }
+
+
+  update();
+
+  const toggle = document.getElementById('themeToggle');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const stored = localStorage.getItem('theme');
+
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    toggle.innerHTML = t === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-regular fa-moon"></i>';
+  }
+
+  applyTheme(stored || (prefersDark ? 'dark' : 'light'));
+
+  toggle.onclick = () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', next);
+    applyTheme(next);
+  };
+</script>
+
+</body>
+</html>
