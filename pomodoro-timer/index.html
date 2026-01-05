@@ -38,11 +38,7 @@
       color: var(--text);
     }
 
-    .app {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+    .app { min-height: 100vh; display: flex; flex-direction: column; }
 
     .topbar {
       height: 48px;
@@ -54,13 +50,7 @@
       padding: 0 16px;
     }
 
-    .logo-link {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      text-decoration: none;
-    }
-
+    .logo-link { font-size: 18px; font-weight: 700; color: var(--text); text-decoration: none; }
     .topbar-spacer { flex: 1; }
 
     .topbar-link {
@@ -91,11 +81,52 @@
       justify-content: center;
     }
 
+    h1 { margin: 24px auto 0; max-width: 90vw; font-size: 20px; }
+
     main {
       padding: 24px;
-      max-width: 720px;
+      max-width: 90vw;
       width: 100%;
       margin: 0 auto;
+      display: grid;
+      grid-template-columns: 260px minmax(420px, 1fr) 1fr;
+      gap: 24px;
+    }
+
+    .tasks {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .tasks h2 { font-size: 14px; margin: 0; color: var(--muted); }
+
+    .task-list { display: flex; flex-direction: column; gap: 6px; }
+
+    .task {
+      padding: 8px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      border: 1px solid transparent;
+    }
+
+    .task.active { background: var(--accent); color: #fff; }
+    .task.disabled { opacity: 0.5; cursor: not-allowed; }
+    .task:hover { border-color: var(--border); }
+
+    .add-task { display: flex; gap: 6px; }
+    .add-task input {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
     }
 
     .timer-card {
@@ -104,32 +135,19 @@
       border-radius: 12px;
       padding: 32px;
       text-align: center;
+      position: relative;
     }
 
-    .mode {
-      font-size: 14px;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
+    .task-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+    .mode { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
 
-    .time {
-      font-size: 64px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      margin: 12px 0 24px;
-    }
+    .mode-switch { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; }
+    .mode-switch .btn { padding: 6px 10px; font-size: 12px; }
+    .mode-switch .btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
-    .progress {
-      margin: 12px auto 0;
-      display: block;
-    }
+    .time { font-size: 64px; font-weight: 700; margin: 12px 0 24px; }
 
-    .controls {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
+    .controls { display: flex; gap: 12px; justify-content: center; }
 
     .btn {
       padding: 10px 18px;
@@ -141,303 +159,229 @@
       color: var(--text);
     }
 
-    .btn.primary {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
+    .btn.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
     }
 
-    [data-theme="dark"] .btn.primary { color: #1e1e1e; }
-
-    .settings {
-      margin-top: 24px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
+    .modal-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
-    .settings label {
-      font-size: 12px;
-      color: var(--muted);
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .settings input {
-      width: 100%;
-      padding: 8px;
-      border-radius: 6px;
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 12px; color: var(--muted); }
+    .field input {
+      padding: 8px 10px;
+      border-radius: 8px;
       border: 1px solid var(--border);
       background: var(--panel);
       color: var(--text);
     }
 
-    footer {
-      margin-top: auto;
-      background: var(--topbar-bg);
-      border-top: 1px solid var(--border);
-      padding: 10px 16px;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .socials a {
-      margin-left: 14px;
-      color: var(--muted);
-      font-size: 16px;
-      text-decoration: none;
-    }
-
-    .socials a:hover { color: var(--accent); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
   </style>
 </head>
 <body>
 <div class="app">
+<header class="topbar">
+  <a href="https://rajanand.org/tools" class="logo-link">Rajanand</a>
+  <div class="topbar-spacer"></div>
+  <a href="https://rajanand.substack.com/s/vibe-coding" class="topbar-link"><i class="fa-regular fa-circle-question"></i> How this works</a>
+  <a href="https://rajanand.org/tools" class="topbar-link"><i class="fa-solid fa-toolbox"></i> Toolbox</a>
+  <button id="themeToggle"><i class="fa-regular fa-moon"></i></button>
+</header>
 
-  <header class="topbar">
-    <a href="https://rajanand.org/tools" class="logo-link">____Rajanand</a>
-    <div class="topbar-spacer"></div>
-    <a href="https://rajanand.substack.com/s/vibe-coding" class="topbar-link">
-      <i class="fa-regular fa-circle-question"></i>
-      How this works
-    </a>
-    <a href="https://rajanand.org/tools" class="topbar-link">
-      <i class="fa-solid fa-toolbox"></i>
-      Toolbox
-    </a>
-    <button id="themeToggle"><i class="fa-regular fa-moon"></i></button>
-  </header>
+<h1>Pomodoro Timer</h1>
 
-  <main>
-    <h1>Pomodoro Timer</h1>
-
-    <div class="timer-card">
-      <div class="mode" id="modeLabel">Focus</div>
-
-      <svg class="progress" width="180" height="180" viewBox="0 0 180 180">
-        <circle cx="90" cy="90" r="80" stroke="var(--border)" stroke-width="10" fill="none" />
-        <circle id="progressCircle" cx="90" cy="90" r="80" stroke="var(--accent)" stroke-width="10" fill="none"
-                stroke-linecap="round" transform="rotate(-90 90 90)" />
-      </svg>
-
-      <div class="time" id="timeDisplay">25:00</div>
-
-      <div class="controls">
-        <button class="btn primary" id="startPause">Start</button>
-        <button class="btn" id="reset">Reset</button>
-        <button class="btn" id="skip">Skip</button>
-      </div>
-
-      <div class="settings">
-        <div>
-          <label>Focus (min)</label>
-          <input type="number" id="focusInput" value="25" min="1" />
-        </div>
-        <div>
-          <label>Short Break</label>
-          <input type="number" id="shortInput" value="5" min="1" />
-        </div>
-        <div>
-          <label>Long Break</label>
-          <input type="number" id="longInput" value="15" min="1" />
-        </div>
-      </div>
+<main>
+  <div class="tasks">
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <h2>Tasks</h2>
+      <button id="showAddTask" class="btn" style="padding:4px 8px;"><i class="fa-solid fa-plus"></i></button>
     </div>
-  </main>
-
-  <footer>
-    <div class="socials">
-      <a href="https://github.com/rajanand/tools" title="Source Code"><i class="fa-solid fa-code"></i></a>
-      <a href="https://rajanand.org/tools" title="Tools"><i class="fa-solid fa-globe"></i></a>
-      <a href="https://x.com/iRajanand" title="X"><i class="fa-brands fa-x-twitter"></i></a>
-      <a href="https://www.linkedin.com/in/iRajanand" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
-      <a href="https://github.com/rajanand" title="GitHub"><i class="fa-brands fa-github"></i></a>
-      <a href="https://rajanand.substack.com/welcome" title="Substack"><i class="fa-regular fa-envelope"></i></a>
+    <div id="taskList" class="task-list"></div>
+    <div class="add-task" id="addTaskRow" style="display:none;">
+      <input id="newTaskInput" placeholder="New task" />
+      <button id="addTaskBtn" class="btn">Add</button>
     </div>
-  </footer>
+  </div>
+
+  <div class="timer-card">
+    <button id="openSettings" class="btn" style="position:absolute;top:12px;right:12px;border-radius:50%;width:36px;height:36px;padding:0;"><i class="fa-solid fa-gear"></i></button>
+    <div id="activeTaskTitle" class="task-title">Default Task</div>
+    <div id="modeLabel" class="mode">Focus</div>
+    <div class="mode-switch" id="modeSwitch">
+      <button class="btn active" data-mode="focus">Focus</button>
+      <button class="btn" data-mode="short">Short break</button>
+      <button class="btn" data-mode="long">Long break</button>
+    </div>
+    <div id="timeDisplay" class="time">25:00</div>
+    <div class="controls">
+      <button id="startPause" class="btn primary">Start</button>
+      <button id="reset" class="btn">Reset</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<div id="settingsModal" class="modal">
+  <div class="modal-card">
+    <h3>Timer Settings</h3>
+    <div class="field"><label>Focus (minutes)</label><input id="cfgFocus" type="number" min="1" /></div>
+    <div class="field"><label>Short break (minutes)</label><input id="cfgShort" type="number" min="1" /></div>
+    <div class="field"><label>Long break (minutes)</label><input id="cfgLong" type="number" min="1" /></div>
+    <div class="modal-actions">
+      <button id="closeSettings" class="btn">Cancel</button>
+      <button id="saveSettings" class="btn primary">Save</button>
+    </div>
+  </div>
 </div>
 
 <script>
-  const toggle = document.getElementById('themeToggle');
-  const storedTheme = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+// -------- Theme toggle --------
+const toggle = document.getElementById('themeToggle');
+const storedTheme = localStorage.getItem('theme');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-  function applyTheme(t) {
-    document.documentElement.setAttribute('data-theme', t);
-    toggle.innerHTML = t === 'dark'
-      ? '<i class="fa-regular fa-sun"></i>'
-      : '<i class="fa-regular fa-moon"></i>';
-  }
+function applyTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  toggle.innerHTML = t === 'dark' ? '<i class="fa-regular fa-sun"></i>' : '<i class="fa-regular fa-moon"></i>';
+}
 
-  applyTheme(storedTheme || (prefersDark ? 'dark' : 'light'));
+applyTheme(storedTheme || (prefersDark ? 'dark' : 'light'));
 
-  toggle.onclick = () => {
-    const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    localStorage.setItem('theme', next);
-    applyTheme(next);
-  };
+toggle.onclick = () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('theme', next);
+  applyTheme(next);
+};
 
-  const STORAGE_KEY = 'pomodoro_state';
+// -------- App logic --------
+const STORAGE_KEY = 'pomodoro_tasks';
+const CONFIG_KEY = 'pomodoro_config';
 
-  function loadState() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-    } catch {
-      return {};
-    }
-  }
+function loadJSON(k, d) { try { return JSON.parse(localStorage.getItem(k)) || d; } catch { return d; } }
+function saveJSON(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
 
-  function saveState() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      focus: Number(focusInput.value),
-      short: Number(shortInput.value),
-      long: Number(longInput.value),
-      mode,
-      remaining,
-      cycle
-    }));
-  }
+let tasks = loadJSON(STORAGE_KEY, [{ id: 'default', name: 'Default Task', pomodoros: 0, focusSeconds: 0, interruptions: 0 }]);
+let config = loadJSON(CONFIG_KEY, { focus: 25, short: 5, long: 15 });
+let activeTaskId = tasks[0].id;
 
-  let timer = null;
-  let running = false;
+const taskList = document.getElementById('taskList');
+const title = document.getElementById('activeTaskTitle');
 
-  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  function playBeep() {
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.type = 'sine';
-    osc.frequency.value = 880;
-    gain.gain.value = 0.1;
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    osc.start();
-    osc.stop(audioCtx.currentTime + 0.15);
-  }
-
-  const progressCircle = document.getElementById('progressCircle');
-  const radius = 80;
-  const circumference = 2 * Math.PI * radius;
-  progressCircle.style.strokeDasharray = circumference;
-
-  const state = loadState();
-
-  const focusInput = document.getElementById('focusInput');
-  const shortInput = document.getElementById('shortInput');
-  const longInput = document.getElementById('longInput');
-
-  let mode = state.mode || 'focus';
-  let cycle = state.cycle || 0;
-
-  focusInput.value = state.focus || 25;
-  shortInput.value = state.short || 5;
-  longInput.value = state.long || 15;
-
-  let remaining = state.remaining || focusInput.value * 60;
-
-  const display = document.getElementById('timeDisplay');
-  const modeLabel = document.getElementById('modeLabel');
-  const startPause = document.getElementById('startPause');
-  const resetBtn = document.getElementById('reset');
-  const skipBtn = document.getElementById('skip');
-
-  function updateProgress() {
-    const total = (
-      mode === 'focus' ? focusInput.value :
-      mode === 'short' ? shortInput.value : longInput.value
-    ) * 60;
-    const offset = circumference * (1 - remaining / total);
-    progressCircle.style.strokeDashoffset = offset;
-  }
-
-  function updateDisplay() {
-    const m = Math.floor(remaining / 60);
-    const s = remaining % 60;
-    display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    updateProgress();
-  }
-
-  function setMode(nextMode) {
-    mode = nextMode;
-    modeLabel.textContent =
-      mode === 'focus' ? 'Focus' : mode === 'short' ? 'Short Break' : 'Long Break';
-
-    const mins =
-      mode === 'focus' ? focusInput.value :
-      mode === 'short' ? shortInput.value : longInput.value;
-
-    remaining = mins * 60;
-    updateDisplay();
-    saveState();
-  }
-
-  function tick() {
-    if (remaining > 0) {
-      remaining--;
-      updateDisplay();
-      saveState();
-    } else {
-      playBeep();
-      clearInterval(timer);
-      running = false;
-      startPause.textContent = 'Start';
-
-      if (mode === 'focus') {
-        cycle++;
-        setMode(cycle % 4 === 0 ? 'long' : 'short');
-      } else {
-        setMode('focus');
-      }
-    }
-  }
-
-  startPause.onclick = () => {
-    if (!running) {
-      timer = setInterval(tick, 1000);
-      running = true;
-      startPause.textContent = 'Pause';
-    } else {
-      clearInterval(timer);
-      running = false;
-      startPause.textContent = 'Start';
-      saveState();
-    }
-  };
-
-  resetBtn.onclick = () => {
-    clearInterval(timer);
-    running = false;
-    cycle = 0;
-    startPause.textContent = 'Start';
-    setMode('focus');
-  };
-
-  skipBtn.onclick = () => {
-    clearInterval(timer);
-    running = false;
-    startPause.textContent = 'Start';
-    if (mode === 'focus') {
-      cycle++;
-      setMode(cycle % 4 === 0 ? 'long' : 'short');
-    } else {
-      setMode('focus');
-    }
-  };
-
-  focusInput.onchange = shortInput.onchange = longInput.onchange = () => {
-    if (!running) setMode(mode);
-  };
-
-  document.addEventListener('keydown', (e) => {
-    if (e.code === 'Space') {
-      e.preventDefault();
-      startPause.click();
-    }
-    if (e.key === 'r') resetBtn.click();
-    if (e.key === 's') skipBtn.click();
+function renderTasks() {
+  taskList.innerHTML = '';
+  tasks.forEach(t => {
+    const d = document.createElement('div');
+    const isActive = t.id === activeTaskId;
+    d.className = 'task' + (isActive ? ' active' : '') + (running && !isActive ? ' disabled' : '');
+    d.textContent = t.name + ' (' + t.pomodoros + ')';
+    d.onclick = () => { if (running) return; activeTaskId = t.id; renderTasks(); };
+    taskList.appendChild(d);
   });
+  const a = tasks.find(t => t.id === activeTaskId) || tasks[0];
+  activeTaskId = a.id;
+  title.textContent = a.name;
+}
 
-  updateDisplay();
-  saveState();
+const addTaskBtn = document.getElementById('addTaskBtn');
+const newTaskInput = document.getElementById('newTaskInput');
+const addTaskRow = document.getElementById('addTaskRow');
+const showAddTask = document.getElementById('showAddTask');
+
+addTaskBtn.onclick = () => {
+  const v = newTaskInput.value.trim();
+  if (!v) return;
+  tasks.push({ id: crypto.randomUUID(), name: v, pomodoros: 0, focusSeconds: 0, interruptions: 0 });
+  newTaskInput.value = '';
+  addTaskRow.style.display = 'none';
+  saveJSON(STORAGE_KEY, tasks);
+  renderTasks();
+};
+
+showAddTask.onclick = () => { addTaskRow.style.display = addTaskRow.style.display === 'none' ? 'flex' : 'none'; };
+
+const display = document.getElementById('timeDisplay');
+const modeLabel = document.getElementById('modeLabel');
+const startPause = document.getElementById('startPause');
+const resetBtn = document.getElementById('reset');
+
+let mode = 'focus';
+let cycle = 0;
+let remaining = config.focus * 60;
+let running = false;
+let timer = null;
+
+function setMode(m) {
+  mode = m;
+  if (m === 'focus') { remaining = config.focus * 60; modeLabel.textContent = 'Focus'; }
+  else if (m === 'short') { remaining = config.short * 60; modeLabel.textContent = 'Short break'; }
+  else { remaining = config.long * 60; modeLabel.textContent = 'Long break'; }
+  document.querySelectorAll('#modeSwitch .btn').forEach(b => b.classList.toggle('active', b.dataset.mode === m));
+  update();
+}
+
+const modeSwitch = document.getElementById('modeSwitch');
+modeSwitch.addEventListener('click', e => { const btn = e.target.closest('button'); if (!btn || running) return; setMode(btn.dataset.mode); });
+
+function update() {
+  const m = Math.floor(remaining / 60);
+  const s = remaining % 60;
+  display.textContent = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+}
+
+function tick() {
+  remaining--;
+  const t = tasks.find(x => x.id === activeTaskId);
+  if (mode === 'focus' && t) t.focusSeconds++;
+  if (remaining <= 0) {
+    clearInterval(timer);
+    running = false;
+    startPause.textContent = 'Start';
+    if (mode === 'focus') { if (t) t.pomodoros++; cycle++; setMode(cycle % 4 === 0 ? 'long' : 'short'); }
+    else { setMode('focus'); }
+  }
+  saveJSON(STORAGE_KEY, tasks);
+  update();
+}
+
+startPause.onclick = () => {
+  renderTasks();
+  if (!running) { timer = setInterval(tick, 1000); running = true; startPause.textContent = 'Pause'; }
+  else { clearInterval(timer); running = false; startPause.textContent = 'Start'; const t = tasks.find(x => x.id === activeTaskId); if (t) t.interruptions++; }
+};
+
+resetBtn.onclick = () => { renderTasks(); clearInterval(timer); running = false; setMode('focus'); startPause.textContent = 'Start'; };
+
+const openSettings = document.getElementById('openSettings');
+const closeSettings = document.getElementById('closeSettings');
+const saveSettings = document.getElementById('saveSettings');
+const settingsModal = document.getElementById('settingsModal');
+const cfgFocus = document.getElementById('cfgFocus');
+const cfgShort = document.getElementById('cfgShort');
+const cfgLong = document.getElementById('cfgLong');
+
+openSettings.onclick = () => { cfgFocus.value = config.focus; cfgShort.value = config.short; cfgLong.value = config.long; settingsModal.style.display = 'flex'; };
+closeSettings.onclick = () => settingsModal.style.display = 'none';
+saveSettings.onclick = () => { config = { focus: Number(cfgFocus.value) || 25, short: Number(cfgShort.value) || 5, long: Number(cfgLong.value) || 15 }; saveJSON(CONFIG_KEY, config); settingsModal.style.display = 'none'; if (!running) setMode('focus'); };
+
+renderTasks();
+update();
 </script>
 </body>
 </html>
