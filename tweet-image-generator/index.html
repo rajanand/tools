@@ -126,6 +126,39 @@
 
     button.primary { background: var(--accent); color: #fff; border: none; margin-top: 14px; cursor: pointer; }
 
+    .avatar-upload {
+      margin-top: 6px;
+    }
+
+    .avatar-upload input[type="file"] {
+      display: none;
+    }
+
+    .avatar-upload-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border: 1px dashed var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      color: var(--text);
+      background: var(--panel);
+    }
+
+    .avatar-upload-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .avatar-upload-hint {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
     .metrics-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -210,6 +243,7 @@
   <header class="topbar">
     <a href="https://rajanand.org/tools" class="logo-link">Rajanand</a>
     <div style="flex:1"></div>
+    <a href="https://rajanand.substack.com/p/tweet-image-generator" class="toolbox-link" title="How this works"><i class="fa-regular fa-circle-question"></i>How this works</a>
     <a href="https://rajanand.org/tools" class="toolbox-link"><i class="fa-solid fa-toolbox"></i>Toolbox</a>
     <button id="themeToggle"><i class="fa-regular fa-moon"></i></button>
   </header>
@@ -229,8 +263,15 @@
         <textarea id="text">Thank you for using my tool.
 https://rajanand.org/tools</textarea>
 
-        <label>Avatar Upload</label>
-        <input type="file" id="avatarUpload" accept="image/*" />
+        <label>Avatar</label>
+        <div class="avatar-upload">
+          <input type="file" id="avatarUpload" accept="image/*" />
+          <label for="avatarUpload" class="avatar-upload-btn">
+            <i class="fa-regular fa-image"></i>
+            <span>Upload avatar</span>
+          </label>
+          <span class="avatar-upload-hint">Optional · PNG or JPG, square works best</span>
+        </div>
 
         <label>Date & Time</label>
         <input type="datetime-local" id="datetime" />

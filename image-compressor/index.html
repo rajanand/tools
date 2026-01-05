@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Compressor</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #fafafa;
+      padding: 40px;
+      max-width: 720px;
+      margin: auto;
+    }
+    h1 {
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+    p {
+      color: #555;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    input[type=file] {
+      display: none;
+    }
+    .file-btn {
+      display: inline-block;
+      padding: 10px 16px;
+      background: #e5e7eb;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .file-btn:hover {
+      background: #d1d5db;
+    }
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: 600;
+    }
+    input[type=range] {
+      width: 100%;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #ffb703;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    .result {
+      margin-top: 24px;
+      display: none;
+    }
+    img {
+      max-width: 100%;
+      border-radius: 6px;
+      margin-top: 12px;
+    }
+    .meta {
+      margin-top: 8px;
+      color: #444;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Compressor</h1>
+  <p>Client-side image compression. No upload. No tracking.</p>
+
+  <div class="card">
+    <label class="file-btn" for="fileInput">Choose image</label>
+    <input type="file" id="fileInput" accept="image/*" />
+    <div class="meta" id="fileInfo"></div>
+
+    <label>Output format</label>
+    <div>
+      <label><input type="radio" name="format" value="image/jpeg" checked /> JPEG</label>
+      <label><input type="radio" name="format" value="image/webp" /> WebP</label>
+      <label><input type="radio" name="format" value="image/png" /> PNG (lossless)</label>
+    </div>
+    <div class="meta" id="formatHint"></div>
+    <div class="meta" id="approxHint"></div>
+
+    <label for="maxWidth">Max width (px)</label>
+    <input type="range" id="maxWidth" min="400" max="2400" step="100" value="1200" />
+    <div class="meta" id="dimInfo">Resize longest edge to 1200px</div>
+
+    <label for="quality">Compression quality (JPEG / WebP)</label>
+    <input type="range" id="quality" min="0.1" max="1" step="0.05" value="0.75" />
+
+    <button id="compressBtn">Compress</button>
+
+    <div class="result" id="result">
+      <div class="meta" id="info"></div>
+      <a id="download">Download compressed image</a>
+      <img id="output" />
+    </div>
+  </div>
+
+  <canvas id="canvas" style="display:none"></canvas>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const fileInput = document.getElementById('fileInput');
+      const fileInfo = document.getElementById('fileInfo');
+      const maxWidthInput = document.getElementById('maxWidth');
+      const qualityInput = document.getElementById('quality');
+      const approxHint = document.getElementById('approxHint');
+      const formatHint = document.getElementById('formatHint');
+      const dimInfo = document.getElementById('dimInfo');
+      const compressBtn = document.getElementById('compressBtn');
+
+      function showFileInfo() {
+        if (!fileInput.files.length) {
+          fileInfo.textContent = '';
+          return;
+        }
+        const file = fileInput.files[0];
+        const sizeKB = (file.size / 1024).toFixed(1);
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        fileInfo.textContent = `Selected file: ${file.name} • ${sizeKB} KB (${sizeMB} MB)`;
+      }
+
+      function updateApproxSize() {
+        const format = document.querySelector('input[name="format"]:checked').value;
+        const q = parseFloat(qualityInput.value);
+        const w = parseInt(maxWidthInput.value, 10);
+        let range = '';
+
+        if (format === 'image/webp') {
+          range = q <= 0.6 ? '≈ 60–120 KB' : q <= 0.75 ? '≈ 80–200 KB' : '≈ 150–350 KB';
+        } else if (format === 'image/jpeg') {
+          range = q <= 0.6 ? '≈ 120–250 KB' : q <= 0.8 ? '≈ 150–300 KB' : '≈ 250–500 KB';
+        } else {
+          range = '≈ 300–800 KB (lossless)';
+        }
+        approxHint.textContent = `Approx output size at ${w}px: ${range}`;
+      }
+
+      function applyFormatPreset() {
+        const format = document.querySelector('input[name="format"]:checked').value;
+        if (format === 'image/jpeg') {
+          maxWidthInput.value = 1200;
+          qualityInput.value = 0.75;
+          qualityInput.disabled = false;
+          formatHint.textContent = 'JPEG preset: 1200px width · photos';
+        } else if (format === 'image/webp') {
+          maxWidthInput.value = 1200;
+          qualityInput.value = 0.7;
+          qualityInput.disabled = false;
+          formatHint.textContent = 'WebP preset: 1200px width · best default';
+        } else {
+          maxWidthInput.value = 800;
+          qualityInput.disabled = true;
+          formatHint.textContent = 'PNG preset: 800px width · lossless';
+        }
+        dimInfo.textContent = `Resize longest edge to ${maxWidthInput.value}px`;
+        updateApproxSize();
+      }
+
+      function compressImage() {
+        if (!fileInput.files.length) return;
+
+        const file = fileInput.files[0];
+        const img = new Image();
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const format = document.querySelector('input[name="format"]:checked').value;
+        const quality = parseFloat(qualityInput.value);
+        const maxWidth = parseInt(maxWidthInput.value, 10);
+        const result = document.getElementById('result');
+        const output = document.getElementById('output');
+        const info = document.getElementById('info');
+        const download = document.getElementById('download');
+
+        img.onload = () => {
+          const scale = Math.min(1, maxWidth / img.width);
+          const w = Math.round(img.width * scale);
+          const h = Math.round(img.height * scale);
+          canvas.width = w;
+          canvas.height = h;
+          ctx.drawImage(img, 0, 0, w, h);
+
+          canvas.toBlob(blob => {
+            const url = URL.createObjectURL(blob);
+            output.src = url;
+            download.href = url;
+            download.download = `compressed.${format.split('/')[1]}`;
+            const originalKB = (file.size / 1024).toFixed(1);
+            const compressedKB = (blob.size / 1024).toFixed(1);
+            const pct = Math.round((1 - blob.size / file.size) * 100);
+            info.textContent = `Original: ${originalKB} KB → ${compressedKB} KB (${pct}% smaller) · ${w}×${h}`;
+            result.style.display = 'block';
+          }, format, format === 'image/png' ? undefined : quality);
+        };
+        img.src = URL.createObjectURL(file);
+      }
+
+      // Event bindings
+      fileInput.addEventListener('change', showFileInfo);
+      document.querySelectorAll('input[name="format"]').forEach(r => r.addEventListener('change', applyFormatPreset));
+      maxWidthInput.addEventListener('input', () => {
+        dimInfo.textContent = `Resize longest edge to ${maxWidthInput.value}px`;
+        updateApproxSize();
+      });
+      qualityInput.addEventListener('input', updateApproxSize);
+      compressBtn.addEventListener('click', compressImage);
+
+      // Init
+      applyFormatPreset();
+    });
+  </script>
+</body>
+</html>
