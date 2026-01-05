@@ -44,7 +44,6 @@
       flex-direction: column;
     }
 
-    /* Top bar */
     .topbar {
       height: 48px;
       background: var(--topbar-bg);
@@ -117,7 +116,12 @@
       font-size: 64px;
       font-weight: 700;
       letter-spacing: 1px;
-      margin: 16px 0 24px;
+      margin: 12px 0 24px;
+    }
+
+    .progress {
+      margin: 12px auto 0;
+      display: block;
     }
 
     .controls {
@@ -191,7 +195,7 @@
 <div class="app">
 
   <header class="topbar">
-    <a href="https://rajanand.org/tools" class="logo-link">Rajanand</a>
+    <a href="https://rajanand.org/tools" class="logo-link">____Rajanand</a>
     <div class="topbar-spacer"></div>
     <a href="https://rajanand.substack.com/s/vibe-coding" class="topbar-link">
       <i class="fa-regular fa-circle-question"></i>
@@ -209,6 +213,13 @@
 
     <div class="timer-card">
       <div class="mode" id="modeLabel">Focus</div>
+
+      <svg class="progress" width="180" height="180" viewBox="0 0 180 180">
+        <circle cx="90" cy="90" r="80" stroke="var(--border)" stroke-width="10" fill="none" />
+        <circle id="progressCircle" cx="90" cy="90" r="80" stroke="var(--accent)" stroke-width="10" fill="none"
+                stroke-linecap="round" transform="rotate(-90 90 90)" />
+      </svg>
+
       <div class="time" id="timeDisplay">25:00</div>
 
       <div class="controls">
@@ -248,7 +259,7 @@
 
 <script>
   const toggle = document.getElementById('themeToggle');
-  const stored = localStorage.getItem('theme');
+  const storedTheme = localStorage.getItem('theme');
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   function applyTheme(t) {
@@ -258,7 +269,7 @@
       : '<i class="fa-regular fa-moon"></i>';
   }
 
-  applyTheme(stored || (prefersDark ? 'dark' : 'light'));
+  applyTheme(storedTheme || (prefersDark ? 'dark' : 'light'));
 
   toggle.onclick = () => {
     const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -266,20 +277,83 @@
     applyTheme(next);
   };
 
+  const STORAGE_KEY = 'pomodoro_state';
+
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    } catch {
+      return {};
+    }
+  }
+
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      focus: Number(focusInput.value),
+      short: Number(shortInput.value),
+      long: Number(longInput.value),
+      mode,
+      remaining,
+      cycle
+    }));
+  }
+
   let timer = null;
-  let remaining = 25 * 60;
   let running = false;
-  let mode = 'focus';
-  let cycle = 0;
+
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function playBeep() {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 880;
+    gain.gain.value = 0.1;
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.15);
+  }
+
+  const progressCircle = document.getElementById('progressCircle');
+  const radius = 80;
+  const circumference = 2 * Math.PI * radius;
+  progressCircle.style.strokeDasharray = circumference;
+
+  const state = loadState();
+
+  const focusInput = document.getElementById('focusInput');
+  const shortInput = document.getElementById('shortInput');
+  const longInput = document.getElementById('longInput');
+
+  let mode = state.mode || 'focus';
+  let cycle = state.cycle || 0;
+
+  focusInput.value = state.focus || 25;
+  shortInput.value = state.short || 5;
+  longInput.value = state.long || 15;
+
+  let remaining = state.remaining || focusInput.value * 60;
 
   const display = document.getElementById('timeDisplay');
   const modeLabel = document.getElementById('modeLabel');
   const startPause = document.getElementById('startPause');
+  const resetBtn = document.getElementById('reset');
+  const skipBtn = document.getElementById('skip');
+
+  function updateProgress() {
+    const total = (
+      mode === 'focus' ? focusInput.value :
+      mode === 'short' ? shortInput.value : longInput.value
+    ) * 60;
+    const offset = circumference * (1 - remaining / total);
+    progressCircle.style.strokeDashoffset = offset;
+  }
 
   function updateDisplay() {
     const m = Math.floor(remaining / 60);
     const s = remaining % 60;
     display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    updateProgress();
   }
 
   function setMode(nextMode) {
@@ -293,13 +367,16 @@
 
     remaining = mins * 60;
     updateDisplay();
+    saveState();
   }
 
   function tick() {
     if (remaining > 0) {
       remaining--;
       updateDisplay();
+      saveState();
     } else {
+      playBeep();
       clearInterval(timer);
       running = false;
       startPause.textContent = 'Start';
@@ -322,17 +399,19 @@
       clearInterval(timer);
       running = false;
       startPause.textContent = 'Start';
+      saveState();
     }
   };
 
-  reset.onclick = () => {
+  resetBtn.onclick = () => {
     clearInterval(timer);
     running = false;
+    cycle = 0;
     startPause.textContent = 'Start';
     setMode('focus');
   };
 
-  skip.onclick = () => {
+  skipBtn.onclick = () => {
     clearInterval(timer);
     running = false;
     startPause.textContent = 'Start';
@@ -344,7 +423,21 @@
     }
   };
 
-  setMode('focus');
+  focusInput.onchange = shortInput.onchange = longInput.onchange = () => {
+    if (!running) setMode(mode);
+  };
+
+  document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+      e.preventDefault();
+      startPause.click();
+    }
+    if (e.key === 'r') resetBtn.click();
+    if (e.key === 's') skipBtn.click();
+  });
+
+  updateDisplay();
+  saveState();
 </script>
 </body>
 </html>
