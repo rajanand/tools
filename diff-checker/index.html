@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diff Checker · Rajanand Tools</title>
+
+  <link rel="icon" href="https://rajanand.org/favicon.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+
+  <style>
+    :root {
+      --canvas: #f3f3f3;
+      --panel: #ffffff;
+      --topbar-bg: #f3f3f3;
+      --text: #1f2328;
+      --muted: #6e7781;
+      --border: #d0d7de;
+      --accent: #F54E00;
+      --code-bg: #ffffff;
+    }
+
+    [data-theme="dark"] {
+      --canvas: #0d1117;
+      --panel: #161b22;
+      --topbar-bg: #161b22;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --border: #30363d;
+      --accent: #F9BD2B;
+      --code-bg: #0d1117;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--canvas);
+      color: var(--text);
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top bar */
+    .topbar {
+      height: 48px;
+      background: var(--topbar-bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+    }
+
+    .logo-link {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .topbar-spacer {
+      flex: 1;
+    }
+
+    .topbar-link {
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: var(--accent);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    [data-theme="dark"] .topbar-link {
+      color: #1e1e1e;
+    }
+
+    #themeToggle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: transparent;
+      cursor: pointer;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Main content */
+    main {
+      padding: 24px;
+      max-width: 1400px;
+      /* Wider for diff view */
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 24px;
+    }
+
+    .tool-container {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .input-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      .input-group {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .input-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .input-label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+
+    .file-input-wrapper input[type=file] {
+      position: absolute;
+      left: -9999px;
+    }
+
+    .file-input-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--canvas);
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .file-input-label:hover {
+      background: var(--border);
+    }
+
+
+
+    textarea {
+      width: 100%;
+      height: 300px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--code-bg);
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: -2px;
+      border-color: var(--accent);
+    }
+
+    textarea.word-wrap {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .options {
+      display: flex;
+      gap: 16px;
+      margin-right: auto;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    button {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+    }
+
+    [data-theme="dark"] .btn-primary {
+      color: #1e1e1e;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+    }
+
+    .btn-secondary:hover {
+      background: var(--canvas);
+    }
+
+    #diff-output {
+      margin-top: 24px;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    /* Scrollbar change indicators */
+    .diff-scrollbar-indicators {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 12px;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .diff-indicator {
+      position: absolute;
+      right: 0;
+      width: 12px;
+      height: 3px;
+      opacity: 0.7;
+    }
+
+    .diff-indicator.addition {
+      background: #22863a;
+    }
+
+    .diff-indicator.deletion {
+      background: #cb2431;
+    }
+
+    .diff-indicator.modification {
+      background: #f9c513;
+    }
+
+    .collapse-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+
+    .collapse-toggle i {
+      transition: transform 0.3s;
+    }
+
+    .collapse-toggle.collapsed i {
+      transform: rotate(-90deg);
+    }
+
+    .collapsible-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    }
+
+    .collapsible-content.collapsed {
+      max-height: 0 !important;
+      opacity: 0;
+    }
+
+    /* Override Diff2Html styles for dark mode compatibility if needed */
+    [data-theme="dark"] .d2h-wrapper {
+      filter: invert(1) hue-rotate(180deg);
+    }
+
+    [data-theme="dark"] .d2h-wrapper img {
+      filter: invert(1) hue-rotate(180deg);
+    }
+
+    /* Footer */
+    footer {
+      margin-top: auto;
+      background: var(--topbar-bg);
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .socials a {
+      margin-left: 14px;
+      color: var(--muted);
+      font-size: 16px;
+      text-decoration: none;
+    }
+
+    .socials a:hover {
+      color: var(--accent);
+    }
+  </style>
+
+  <!-- External Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsdiff/5.1.0/diff.min.js"></script>
+  <!-- Diff2Html from jsDelivr -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/diff2html/bundles/css/diff2html.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/diff2html/bundles/js/diff2html-ui.min.js"></script>
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- Top Navigation -->
+    <header class="topbar">
+      <a href="https://rajanand.org/tools" class="logo-link">Rajanand</a>
+      <div class="topbar-spacer"></div>
+      <a href="https://rajanand.substack.com/s/vibe-coding" class="topbar-link">
+        <i class="fa-regular fa-circle-question"></i>
+        How this works
+      </a>
+      <a href="https://rajanand.org/tools" class="topbar-link">
+        <i class="fa-solid fa-toolbox"></i>
+        Toolbox
+      </a>
+      <button id="themeToggle"><i class="fa-regular fa-moon"></i></button>
+    </header>
+
+    <!-- Content -->
+    <main>
+      <h1>Diff Checker</h1>
+      <div class="tool-container">
+
+        <button class="collapse-toggle" id="collapseToggle">
+          <i class="fa-solid fa-chevron-down"></i>
+          Input Section
+        </button>
+
+        <div class="collapsible-content" id="collapsibleContent">
+          <div class="input-group">
+            <div class="input-pane">
+              <div class="input-header">
+                <span class="input-label">Original Text</span>
+                <div class="file-input-wrapper">
+                  <input type="file" id="fileOriginal" />
+                  <label for="fileOriginal" class="file-input-label">
+                    <i class="fa-solid fa-file-arrow-up"></i>
+                    Choose File
+                  </label>
+                </div>
+              </div>
+              <textarea id="textOriginal" placeholder="Paste original text here..."></textarea>
+            </div>
+
+            <div class="input-pane">
+              <div class="input-header">
+                <span class="input-label">Modified Text</span>
+                <div class="file-input-wrapper">
+                  <input type="file" id="fileModified" />
+                  <label for="fileModified" class="file-input-label">
+                    <i class="fa-solid fa-file-arrow-up"></i>
+                    Choose File
+                  </label>
+                </div>
+              </div>
+              <textarea id="textModified" placeholder="Paste modified text here..."></textarea>
+            </div>
+          </div>
+
+          <div class="controls">
+            <div class="options">
+              <label class="checkbox-label">
+                <input type="checkbox" id="optIgnoreWhitespace" /> Ignore Whitespace
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="optIgnoreCase" /> Ignore Case
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="optWordWrap" /> Word Wrap
+              </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="optShowAllLines" /> Show All Lines
+              </label>
+            </div>
+
+            <button class="btn-secondary" id="btnClear">Clear All</button>
+            <button class="btn-primary" id="btnCompare">Compare Inputs</button>
+          </div>
+        </div>
+
+        <div id="diff-output"></div>
+
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="socials">
+        <a href="https://github.com/rajanand/tools" title="Source Code"><i class="fa-solid fa-code"></i></a>
+        <a href="https://rajanand.org/tools" title="Tools"><i class="fa-solid fa-globe"></i></a>
+        <a href="https://x.com/iRajanand" title="X"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="https://www.linkedin.com/in/iRajanand" title="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+        <a href="https://github.com/rajanand" title="GitHub"><i class="fa-brands fa-github"></i></a>
+        <a href="https://rajanand.substack.com/welcome" title="Substack"><i class="fa-regular fa-envelope"></i></a>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // --- Theme Logic ---
+    const toggle = document.getElementById('themeToggle');
+    const stored = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      toggle.innerHTML = t === 'dark'
+        ? '<i class="fa-regular fa-sun"></i>'
+        : '<i class="fa-regular fa-moon"></i>';
+    }
+
+    applyTheme(stored || (prefersDark ? 'dark' : 'light'));
+
+    toggle.onclick = () => {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    };
+
+    // --- Diff Logic ---
+    const textOriginal = document.getElementById('textOriginal');
+    const textModified = document.getElementById('textModified');
+    const fileOriginal = document.getElementById('fileOriginal');
+    const fileModified = document.getElementById('fileModified');
+    const btnCompare = document.getElementById('btnCompare');
+    const btnClear = document.getElementById('btnClear');
+    const diffOutput = document.getElementById('diff-output');
+    const collapseToggle = document.getElementById('collapseToggle');
+    const collapsibleContent = document.getElementById('collapsibleContent');
+
+    // Word wrap toggle
+    const optWordWrap = document.getElementById('optWordWrap');
+    optWordWrap.addEventListener('change', () => {
+      if (optWordWrap.checked) {
+        textOriginal.classList.add('word-wrap');
+        textModified.classList.add('word-wrap');
+      } else {
+        textOriginal.classList.remove('word-wrap');
+        textModified.classList.remove('word-wrap');
+      }
+    });
+
+    // Synchronized scrolling between textareas
+    let isScrolling = false;
+
+    textOriginal.addEventListener('scroll', () => {
+      if (!isScrolling) {
+        isScrolling = true;
+        textModified.scrollTop = textOriginal.scrollTop;
+        textModified.scrollLeft = textOriginal.scrollLeft;
+        setTimeout(() => { isScrolling = false; }, 10);
+      }
+    });
+
+    textModified.addEventListener('scroll', () => {
+      if (!isScrolling) {
+        isScrolling = true;
+        textOriginal.scrollTop = textModified.scrollTop;
+        textOriginal.scrollLeft = textModified.scrollLeft;
+        setTimeout(() => { isScrolling = false; }, 10);
+      }
+    });
+
+    // Collapsible section
+    let isCollapsed = false;
+    collapseToggle.addEventListener('click', () => {
+      isCollapsed = !isCollapsed;
+      if (isCollapsed) {
+        collapsibleContent.style.maxHeight = collapsibleContent.scrollHeight + 'px';
+        setTimeout(() => {
+          collapsibleContent.classList.add('collapsed');
+        }, 10);
+        collapseToggle.classList.add('collapsed');
+      } else {
+        collapsibleContent.classList.remove('collapsed');
+        collapsibleContent.style.maxHeight = collapsibleContent.scrollHeight + 'px';
+        collapseToggle.classList.remove('collapsed');
+      }
+    });
+
+    // Set initial max-height for collapsible
+    window.addEventListener('load', () => {
+      collapsibleContent.style.maxHeight = collapsibleContent.scrollHeight + 'px';
+    });
+
+    // Load files
+    function readFile(fileInput, textArea) {
+      const file = fileInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          textArea.value = e.target.result;
+        };
+        reader.readAsText(file);
+      }
+    }
+
+    fileOriginal.addEventListener('change', () => readFile(fileOriginal, textOriginal));
+    fileModified.addEventListener('change', () => readFile(fileModified, textModified));
+
+    // Clear
+    btnClear.addEventListener('click', () => {
+      textOriginal.value = '';
+      textModified.value = '';
+      fileOriginal.value = '';
+      fileModified.value = '';
+      diffOutput.innerHTML = '';
+    });
+
+    // Compare
+    btnCompare.addEventListener('click', () => {
+      let oldText = textOriginal.value;
+      let newText = textModified.value;
+
+      const ignoreWhitespace = document.getElementById('optIgnoreWhitespace').checked;
+      const ignoreCase = document.getElementById('optIgnoreCase').checked;
+
+      // Preprocess text based on options
+      let processedOldText = oldText;
+      let processedNewText = newText;
+
+      if (ignoreCase) {
+        processedOldText = processedOldText.toLowerCase();
+        processedNewText = processedNewText.toLowerCase();
+      }
+
+      if (ignoreWhitespace) {
+        // Normalize whitespace: trim lines and collapse multiple spaces to single space
+        processedOldText = processedOldText.split('\n').map(line => line.trim().replace(/\s+/g, ' ')).join('\n');
+        processedNewText = processedNewText.split('\n').map(line => line.trim().replace(/\s+/g, ' ')).join('\n');
+      }
+
+      // Generate Unified Diff
+      let unifiedDiff = "";
+      try {
+        const showAllLines = document.getElementById('optShowAllLines').checked;
+
+        // If Show All Lines is checked, use a very large context to show everything
+        // Otherwise, use default context (3 lines)
+        const contextLines = showAllLines ? 999999 : 3;
+
+        // Use structuredPatch with context parameter
+        const patch = Diff.structuredPatch(
+          "Original",
+          "Modified",
+          processedOldText,
+          processedNewText,
+          "Original",
+          "Modified",
+          { context: contextLines }
+        );
+
+        // Manually convert structured patch to unified diff format
+        unifiedDiff = `--- Original\n+++ Modified\n`;
+        for (const hunk of patch.hunks) {
+          unifiedDiff += `@@ -${hunk.oldStart},${hunk.oldLines} +${hunk.newStart},${hunk.newLines} @@\n`;
+          unifiedDiff += hunk.lines.join('\n') + '\n';
+        }
+      } catch (err) {
+        alert("Error creating patch: " + err.message);
+        return;
+      }
+
+      // Render the diff
+      try {
+        const targetElement = document.getElementById('diff-output');
+
+        // Check if files are identical
+        if (processedOldText === processedNewText) {
+          targetElement.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--muted); font-size: 16px;"><i class="fa-solid fa-check-circle" style="font-size: 48px; color: #22863a; margin-bottom: 16px;"></i><br><strong>Files are identical</strong><br>No differences found between the two inputs.</div>';
+          return;
+        }
+
+        const configuration = {
+          drawFileList: false,
+          matching: 'lines',
+          outputFormat: 'side-by-side',
+        };
+
+        // Check what's available and use it
+        if (typeof Diff2HtmlUI !== 'undefined') {
+          // Use UI if available
+          const diff2htmlUi = new Diff2HtmlUI(targetElement, unifiedDiff, configuration);
+          diff2htmlUi.draw();
+        } else if (typeof Diff2Html !== 'undefined' && Diff2Html.html) {
+          // Fallback to direct HTML generation
+          const diffHtml = Diff2Html.html(unifiedDiff, configuration);
+          targetElement.innerHTML = diffHtml;
+        } else {
+          alert("Diff2Html library failed to load. Please check your internet connection and refresh.");
+          return;
+        }
+
+      } catch (e) {
+        console.error(e);
+        alert("Error rendering diff: " + e.message);
+      }
+
+      // Auto-collapse input section after rendering
+      if (!isCollapsed) {
+        collapsibleContent.style.maxHeight = collapsibleContent.scrollHeight + 'px';
+        setTimeout(() => {
+          collapsibleContent.classList.add('collapsed');
+        }, 10);
+        collapseToggle.classList.add('collapsed');
+        isCollapsed = true;
+      }
+
+      // Generate scrollbar indicators after a short delay to ensure DOM is ready
+      setTimeout(() => {
+        generateScrollbarIndicators();
+      }, 100);
+    });
+
+    // Function to generate scrollbar indicators
+    function generateScrollbarIndicators() {
+      const diffOutput = document.getElementById('diff-output');
+
+      // Remove existing indicators
+      const existingIndicators = diffOutput.querySelector('.diff-scrollbar-indicators');
+      if (existingIndicators) {
+        existingIndicators.remove();
+      }
+
+      // Find all diff rows
+      const addedLines = diffOutput.querySelectorAll('.d2h-ins, .d2h-code-line-ctn.d2h-ins');
+      const deletedLines = diffOutput.querySelectorAll('.d2h-del, .d2h-code-line-ctn.d2h-del');
+
+      if (addedLines.length === 0 && deletedLines.length === 0) {
+        return; // No changes to indicate
+      }
+
+      // Create indicators container
+      const indicatorsContainer = document.createElement('div');
+      indicatorsContainer.className = 'diff-scrollbar-indicators';
+
+      // Get the scrollable height
+      const scrollHeight = diffOutput.scrollHeight;
+      const clientHeight = diffOutput.clientHeight;
+
+      // Add indicators for additions
+      addedLines.forEach(line => {
+        const rect = line.getBoundingClientRect();
+        const containerRect = diffOutput.getBoundingClientRect();
+        const relativeTop = line.offsetTop;
+        const percentage = (relativeTop / scrollHeight) * 100;
+
+        const indicator = document.createElement('div');
+        indicator.className = 'diff-indicator addition';
+        indicator.style.top = percentage + '%';
+        indicatorsContainer.appendChild(indicator);
+      });
+
+      // Add indicators for deletions
+      deletedLines.forEach(line => {
+        const rect = line.getBoundingClientRect();
+        const containerRect = diffOutput.getBoundingClientRect();
+        const relativeTop = line.offsetTop;
+        const percentage = (relativeTop / scrollHeight) * 100;
+
+        const indicator = document.createElement('div');
+        indicator.className = 'diff-indicator deletion';
+        indicator.style.top = percentage + '%';
+        indicatorsContainer.appendChild(indicator);
+      });
+
+      diffOutput.appendChild(indicatorsContainer);
+    }
+
+  </script>
+
+</body>
+
+</html>
