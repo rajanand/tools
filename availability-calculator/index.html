@@ -268,6 +268,7 @@
             font-weight: 700;
             color: var(--primary);
             line-height: 1;
+            margin-left: 0.1em;
         }
 
         .edit-hint {
@@ -933,6 +934,265 @@
                 display: none !important;
             }
         }
+
+        /* ===== COST SECTION ===== */
+        .cost-section {
+            margin-top: 3rem;
+        }
+
+        .cost-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cost-header .material-symbols-outlined {
+            color: var(--primary);
+        }
+
+        .cost-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .cost-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .cost-grid {
+                grid-template-columns: 1.5fr 1fr;
+            }
+        }
+
+        .cost-card {
+            background-color: var(--card-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .cost-label {
+            font-size: 0.75rem;
+            font-family: monospace;
+            text-transform: uppercase;
+            color: var(--text-gray-400);
+            letter-spacing: 0.1em;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .revenue-slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .revenue-prefix {
+            color: var(--text-gray-500);
+            font-size: 1rem;
+        }
+
+        .revenue-slider-wrapper input[type="range"] {
+            flex: 1;
+        }
+
+        .revenue-value {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1rem;
+            min-width: 60px;
+            text-align: right;
+        }
+
+        .cost-results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .cost-result-card {
+            background-color: var(--background-dark);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .cost-result-card.highlight {
+            border: 1px solid var(--primary);
+            background-color: var(--primary-dim);
+        }
+
+        .cost-result-label {
+            display: block;
+            font-size: 0.625rem;
+            font-family: monospace;
+            color: var(--text-gray-500);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .cost-result-card.highlight .cost-result-label {
+            color: var(--primary);
+        }
+
+        .cost-result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-white);
+        }
+
+        .cost-result-card.highlight .cost-result-value {
+            color: var(--primary);
+        }
+
+        .cost-downtime-summary {
+            font-size: 0.875rem;
+            color: var(--text-gray-400);
+        }
+
+        .cost-downtime-summary strong {
+            color: var(--primary);
+        }
+
+        .reality-card {
+            background-color: rgba(255, 200, 0, 0.1);
+            border: 1px solid rgba(255, 200, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .reality-warning-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            opacity: 0.3;
+        }
+
+        .reality-warning-icon .material-symbols-outlined {
+            font-size: 48px;
+            color: #ffc800;
+        }
+
+        .reality-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .reality-badge .material-symbols-outlined {
+            font-size: 18px;
+            color: #ffc800;
+        }
+
+        .reality-badge span {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #ffc800;
+            text-transform: uppercase;
+        }
+
+        .reality-text {
+            font-size: 0.875rem;
+            color: var(--text-gray-300);
+            margin-bottom: 0.75rem;
+        }
+
+        .reality-highlight {
+            font-size: 0.875rem;
+            color: var(--text-gray-300);
+        }
+
+        .reality-highlight strong {
+            color: var(--text-white);
+        }
+
+        /* ===== BREAKDOWN TABLE ===== */
+        .breakdown-section {
+            margin-top: 3rem;
+        }
+
+        .breakdown-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .breakdown-header .material-symbols-outlined {
+            color: var(--primary);
+        }
+
+        .breakdown-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .breakdown-table-wrapper {
+            background-color: var(--card-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .breakdown-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .breakdown-table th {
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-family: monospace;
+            color: var(--text-gray-400);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .breakdown-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            color: var(--text-gray-300);
+        }
+
+        .breakdown-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .breakdown-table tr:hover td {
+            background-color: rgba(51, 255, 255, 0.03);
+        }
+
+        .breakdown-table .avail-cell {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .breakdown-table .analogy-cell {
+            color: var(--text-gray-400);
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .breakdown-table {
+                font-size: 0.75rem;
+            }
+
+            .breakdown-table th,
+            .breakdown-table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
     </style>
 </head>
 
@@ -950,10 +1210,6 @@
                 <button class="btn btn-secondary hide-mobile" onclick="resetCalculator()">
                     <span class="material-symbols-outlined">restart_alt</span>
                     Reset
-                </button>
-                <button class="btn btn-primary">
-                    <span class="material-symbols-outlined">share</span>
-                    Share
                 </button>
             </div>
         </div>
@@ -984,7 +1240,6 @@
                         <div class="slider-progress" id="progress-bar" style="width: 75%"></div>
                         <div class="slider-header">
                             <label class="slider-label" for="availability-slider">ADJUST AVAILABILITY</label>
-                            <span class="strict-mode">NON-LINEAR SCALE</span>
                         </div>
                         <div class="slider-container">
                             <div class="slider-ticks">
@@ -1171,6 +1426,82 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Cost of a Second Section -->
+            <section class="cost-section">
+                <div class="cost-header">
+                    <span class="material-symbols-outlined">attach_money</span>
+                    <h2>Cost of a Second</h2>
+                </div>
+                <div class="cost-grid">
+                    <div class="cost-card">
+                        <div class="cost-card-content">
+                            <label class="cost-label">ESTIMATED ANNUAL REVENUE</label>
+                            <div class="revenue-slider-wrapper">
+                                <span class="revenue-prefix">$</span>
+                                <input id="revenue-slider" type="range" min="0" max="100" step="1" value="50" />
+                                <span class="revenue-value" id="revenue-display">$50M</span>
+                            </div>
+                            <div class="cost-results">
+                                <div class="cost-result-card">
+                                    <span class="cost-result-label">COST / HOUR</span>
+                                    <span class="cost-result-value" id="cost-per-hour">$5,707</span>
+                                </div>
+                                <div class="cost-result-card highlight">
+                                    <span class="cost-result-label">COST / SECOND</span>
+                                    <span class="cost-result-value" id="cost-per-second">$1.58</span>
+                                </div>
+                            </div>
+                            <p class="cost-downtime-summary" id="cost-summary">
+                                At 99.9% availability, you could lose up to <strong>$50,000</strong> annually from
+                                downtime.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="reality-card">
+                        <div class="reality-warning-icon">
+                            <span class="material-symbols-outlined">warning</span>
+                        </div>
+                        <div class="reality-content">
+                            <div class="reality-badge">
+                                <span class="material-symbols-outlined">lightbulb</span>
+                                <span>REALITY CHECK</span>
+                            </div>
+                            <p class="reality-text" id="reality-text">
+                                NASA aims for 7 nines (99.99999%) for the space shuttle software.
+                            </p>
+                            <p class="reality-highlight" id="reality-highlight">
+                                <strong>You are not NASA.</strong> Your cat walking on the keyboard will cost you more
+                                than your budget allows.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Detailed Breakdown Table -->
+            <section class="breakdown-section">
+                <div class="breakdown-header">
+                    <span class="material-symbols-outlined">table_chart</span>
+                    <h2>Detailed Breakdown Table</h2>
+                </div>
+                <div class="breakdown-table-wrapper">
+                    <table class="breakdown-table">
+                        <thead>
+                            <tr>
+                                <th>AVAILABILITY</th>
+                                <th>DOWNTIME / YEAR</th>
+                                <th>DOWNTIME / MONTH</th>
+                                <th>DOWNTIME / WEEK</th>
+                                <th>REAL WORLD ANALOGY</th>
+                            </tr>
+                        </thead>
+                        <tbody id="breakdown-tbody">
+                            <!-- Rows will be generated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </div>
     </main>
 
@@ -1178,15 +1509,15 @@
     <footer>
         <div class="footer-inner">
             <div class="footer-text">
-                <span>Availability Calculator</span> © 2023. Built for those who fear the pager.
+                <span>Availability Calculator</span> © 2026. Built for those who fear the pager.
             </div>
             <div class="footer-links">
-                <a href="#">
+                <a href="https://github.com/rajanand/tools/blob/main/availability-calculator/index.html">
                     <span>GITHUB_REPO</span>
                     <span class="material-symbols-outlined">open_in_new</span>
                 </a>
-                <a href="#">
-                    <span>STATUS_PAGE</span>
+                <a href="https://tools.rajanand.org/">
+                    <span>TOOL_BOX</span>
                     <span class="material-symbols-outlined">signal_cellular_alt</span>
                 </a>
             </div>
@@ -1218,20 +1549,29 @@
         const humorFoodDesc = document.getElementById('humor-food-desc');
         const sliderLabels = document.querySelectorAll('.slider-labels span');
 
+        // Cost elements
+        const revenueSlider = document.getElementById('revenue-slider');
+        const revenueDisplay = document.getElementById('revenue-display');
+        const costPerHour = document.getElementById('cost-per-hour');
+        const costPerSecond = document.getElementById('cost-per-second');
+        const costSummary = document.getElementById('cost-summary');
+        const breakdownTbody = document.getElementById('breakdown-tbody');
+
         // Time constants (in seconds)
         const SECONDS_IN_YEAR = 365.2425 * 24 * 60 * 60;
         const SECONDS_IN_MONTH = SECONDS_IN_YEAR / 12;
         const SECONDS_IN_WEEK = 7 * 24 * 60 * 60;
         const SECONDS_IN_DAY = 24 * 60 * 60;
 
-        // Non-linear mapping: slider position (0-100) to availability percentage
-        // The labels are at: 90%, 99%, 99.9%, 99.99%, 99.999%
-        // We want equal spacing on the slider for these key values
+        // Current state
+        let currentAvailability = 99.9;
+        let currentRevenue = 50000000; // $50M default
+
+        // Non-linear mapping
         const AVAILABILITY_STOPS = [90, 99, 99.9, 99.99, 99.999];
         const SLIDER_STOPS = [0, 25, 50, 75, 100];
 
         function sliderToAvailability(sliderValue) {
-            // Find which segment we're in
             for (let i = 0; i < SLIDER_STOPS.length - 1; i++) {
                 if (sliderValue <= SLIDER_STOPS[i + 1]) {
                     const sliderRange = SLIDER_STOPS[i + 1] - SLIDER_STOPS[i];
@@ -1244,10 +1584,7 @@
         }
 
         function availabilityToSlider(availability) {
-            // Clamp to valid range
             availability = Math.max(90, Math.min(99.999, availability));
-
-            // Find which segment we're in
             for (let i = 0; i < AVAILABILITY_STOPS.length - 1; i++) {
                 if (availability <= AVAILABILITY_STOPS[i + 1]) {
                     const availRange = AVAILABILITY_STOPS[i + 1] - AVAILABILITY_STOPS[i];
@@ -1261,7 +1598,6 @@
 
         function formatDuration(totalSeconds) {
             if (totalSeconds < 1) return "< 1s";
-
             const days = Math.floor(totalSeconds / (3600 * 24));
             totalSeconds -= days * 3600 * 24;
             const hours = Math.floor(totalSeconds / 3600);
@@ -1269,185 +1605,229 @@
             const minutes = Math.floor(totalSeconds / 60);
             totalSeconds -= minutes * 60;
             const seconds = Math.floor(totalSeconds);
-
             const parts = [];
             if (days > 0) parts.push(`${days}d`);
             if (hours > 0) parts.push(`${hours}h`);
             if (minutes > 0) parts.push(`${minutes}m`);
             if (seconds > 0 && parts.length < 3) parts.push(`${seconds}s`);
-
             return parts.length > 0 ? parts.join(' ') : '< 1s';
         }
 
+        function formatDurationLong(totalSeconds) {
+            if (totalSeconds < 60) return `${totalSeconds.toFixed(2)} secs`;
+            if (totalSeconds < 3600) return `${(totalSeconds / 60).toFixed(2)} mins`;
+            if (totalSeconds < 86400) return `${(totalSeconds / 3600).toFixed(2)} hours`;
+            return `${(totalSeconds / 86400).toFixed(2)} days`;
+        }
+
+        function formatMoney(amount) {
+            if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
+            if (amount >= 1000) return `$${(amount / 1000).toFixed(0)}K`;
+            return `$${amount.toFixed(2)}`;
+        }
+
         function getNinesLabel(availability) {
+            if (availability >= 99.9999) return "Six Nines";
             if (availability >= 99.999) return "Five Nines";
             if (availability >= 99.99) return "Four Nines";
             if (availability >= 99.9) return "Three Nines";
             if (availability >= 99) return "Two Nines";
+            if (availability >= 95) return "One & Half";
             return "One Nine";
         }
 
         function updateSliderLabels(availability) {
             sliderLabels.forEach(label => {
                 const labelValue = parseFloat(label.textContent);
-                if (Math.abs(availability - labelValue) < 0.001) {
-                    label.classList.add('active');
-                } else {
-                    label.classList.remove('active');
-                }
+                label.classList.toggle('active', Math.abs(availability - labelValue) < 0.001);
             });
         }
 
         function getHumorComparisons(yearlyDowntimeSeconds) {
             const hours = yearlyDowntimeSeconds / 3600;
             const minutes = yearlyDowntimeSeconds / 60;
-
             let travel, travelDesc, movie, movieDesc, gaming, gamingDesc, food, foodDesc;
 
-            // Travel comparisons
-            if (hours >= 12) {
-                travel = `Enough time to fly from <span class="glitch-hover">Sydney</span> to <span class="glitch-hover">Los Angeles</span>.`;
-                travelDesc = `~${Math.floor(hours)} hours. A 14-hour flight across the Pacific. Plenty of time for an existential crisis at 30,000 feet.`;
-            } else if (hours >= 8) {
-                travel = `Enough time to fly from <span class="glitch-hover">London</span> to <span class="glitch-hover">New York</span>.`;
-                travelDesc = `~${Math.floor(hours)} hours. You could board a plane, cross the Atlantic, and land before your customers realize the site is back up.`;
-            } else if (hours >= 4) {
-                travel = `Time for a road trip from <span class="glitch-hover">LA</span> to <span class="glitch-hover">San Francisco</span>.`;
-                travelDesc = `~${Math.floor(hours)} hours. Drive up the California coast. Your site is down, but the views are nice.`;
+            // Travel - with multipliers
+            const flightSydneyLA = 14; // hours
+            const flightLondonNY = 8;
+            const roadTripLASF = 6;
+
+            if (hours >= flightSydneyLA) {
+                const trips = Math.floor(hours / flightSydneyLA);
+                const roundTrips = Math.floor(trips / 2);
+                if (roundTrips >= 1) {
+                    travel = `Fly <span class="glitch-hover">Sydney ↔ LA</span> round-trip <span class="glitch-hover">${roundTrips} time${roundTrips > 1 ? 's' : ''}</span>.`;
+                    travelDesc = `That's ${roundTrips} complete round-trip(s) across the Pacific. ${hours.toFixed(0)} hours of total downtime.`;
+                } else {
+                    travel = `Fly from <span class="glitch-hover">Sydney</span> to <span class="glitch-hover">Los Angeles</span> ${trips > 1 ? trips + ' times' : 'once'}.`;
+                    travelDesc = `~${hours.toFixed(0)} hours. ${trips > 1 ? trips + ' one-way flights' : 'A 14-hour flight'} across the Pacific.`;
+                }
+            } else if (hours >= flightLondonNY) {
+                const trips = Math.floor(hours / flightLondonNY);
+                travel = `Fly <span class="glitch-hover">London → New York</span> ${trips > 1 ? trips + ' times' : 'once'}.`;
+                travelDesc = `~${hours.toFixed(0)} hours. ${trips > 1 ? 'Multiple transatlantic flights' : 'Cross the Atlantic'} while your site is down.`;
             } else if (hours >= 1) {
-                travel = `A quick hop from <span class="glitch-hover">NYC</span> to <span class="glitch-hover">Boston</span> by train.`;
-                travelDesc = `~${Math.floor(minutes)} minutes. Catch a quick Acela ride and stress about the incident the whole way.`;
-            } else if (minutes >= 15) {
-                travel = `A quick <span class="glitch-hover">Uber ride</span> across town.`;
-                travelDesc = `~${Math.floor(minutes)} minutes. Barely enough to get from one meeting to another.`;
+                travel = `A train from <span class="glitch-hover">NYC</span> to <span class="glitch-hover">Boston</span>.`;
+                travelDesc = `~${minutes.toFixed(0)} minutes. Quick Acela ride while stressing about the incident.`;
             } else {
                 travel = `Just a <span class="glitch-hover">coffee break</span>.`;
-                travelDesc = `~${Math.floor(minutes)} minutes. Barely time to brew coffee before the alerts stop.`;
+                travelDesc = `~${minutes.toFixed(0)} minutes. Barely time to brew coffee.`;
             }
 
-            // Cinema comparisons
-            if (hours >= 10) {
-                movie = `Binge the entire <span class="glitch-hover">Lord of the Rings</span> extended trilogy.`;
-                movieDesc = `All three extended editions clock in at ~11.5 hours. One ring to rule the downtime.`;
-            } else if (hours >= 7.6) {
-                movie = `Watch <span class="glitch-hover">LOTR: Fellowship of the Ring</span> (Extended Edition) twice.`;
-                movieDesc = `With a runtime of 228 minutes, you can fit in two full viewings. That's a lot of walking to Mordor.`;
-            } else if (hours >= 3.8) {
-                movie = `Binge <span class="glitch-hover">Interstellar</span> plus snack breaks.`;
-                movieDesc = `At 169 minutes, you've got time for mind-bending space travel. Time dilation included.`;
-            } else if (hours >= 2) {
+            // Cinema - with multipliers
+            const lotrExtended = 228; // minutes (3.8 hours)
+            const darkKnight = 152;
+            const officeEpisode = 22;
+
+            if (minutes >= lotrExtended * 3) {
+                const times = Math.floor(minutes / lotrExtended);
+                movie = `Watch <span class="glitch-hover">LOTR Extended</span> ${times} times.`;
+                movieDesc = `That's ${times} complete viewings of the 3.8-hour epic. ${(minutes / 60).toFixed(0)} hours of Mordor.`;
+            } else if (minutes >= lotrExtended) {
+                const times = Math.floor(minutes / lotrExtended);
+                movie = `Watch <span class="glitch-hover">LOTR Extended</span> ${times > 1 ? times + ' times' : 'once'}.`;
+                movieDesc = `${times} viewing(s) of the 228-minute epic. That's a lot of walking to Mordor.`;
+            } else if (minutes >= darkKnight) {
                 movie = `Watch <span class="glitch-hover">The Dark Knight</span>.`;
-                movieDesc = `At 152 minutes, enough time to appreciate "why so serious" while infrastructure burns.`;
-            } else if (minutes >= 45) {
-                movie = `A few episodes of <span class="glitch-hover">The Office</span>.`;
-                movieDesc = `About ${Math.floor(minutes / 22)} episodes. That's not a lot of "That's what she said."`;
-            } else if (minutes >= 20) {
-                movie = `Watch an episode of <span class="glitch-hover">Friends</span>.`;
-                movieDesc = `One episode, one laugh track, one incident. Could this BE any more stressful?`;
+                movieDesc = `152 minutes. "Why so serious?" while your infrastructure burns.`;
+            } else if (minutes >= officeEpisode) {
+                const episodes = Math.floor(minutes / officeEpisode);
+                movie = `Binge <span class="glitch-hover">${episodes} episodes of The Office</span>.`;
+                movieDesc = `${episodes} "That's what she said" moments. ${minutes.toFixed(0)} minutes total.`;
             } else {
-                movie = `Maybe a <span class="glitch-hover">YouTube video</span>.`;
-                movieDesc = `${Math.floor(minutes)} minutes. Just enough for a tutorial on "How to fix production."`;
+                movie = `A quick <span class="glitch-hover">YouTube video</span>.`;
+                movieDesc = `${minutes.toFixed(0)} minutes. Tutorial on "How to fix production."`;
             }
 
-            // Gaming comparisons
-            if (hours >= 40) {
-                gaming = `Complete <span class="glitch-hover">The Witcher 3</span> main story.`;
-                gamingDesc = `At ~50 hours for the main quest, you'd be knee-deep in Gwent while your servers burn.`;
-            } else if (hours >= 15) {
-                gaming = `Finish <span class="glitch-hover">Portal 2</span> completely.`;
-                gamingDesc = `About 10-15 hours of testing chambers. The cake is still a lie, but at least you're occupied.`;
+            // Gaming - with multipliers
+            const eldenRingSpeedrun = 30; // minutes
+            const valorantMatch = 40;
+            const rocketLeagueGame = 7;
+
+            if (hours >= 50) {
+                gaming = `100% complete <span class="glitch-hover">The Witcher 3</span>.`;
+                gamingDesc = `All side quests, all Gwent cards. ${hours.toFixed(0)} hours of monster hunting.`;
             } else if (hours >= 8) {
-                gaming = `Complete <span class="glitch-hover">Elden Ring</span> if you're really good.`;
-                gamingDesc = `Speedrunners finish in 30 minutes, but mortals might get past the first boss. Git gud.`;
-            } else if (hours >= 3) {
-                gaming = `Complete a full <span class="glitch-hover">Civilization VI</span> game on quick settings.`;
-                gamingDesc = `Just one more turn... and one more... and your servers are still down.`;
-            } else if (hours >= 1) {
-                gaming = `A few rounds of <span class="glitch-hover">Rocket League</span>.`;
-                gamingDesc = `About ${Math.floor(minutes / 7)} games. What a save! What a save! What a save!`;
-            } else if (minutes >= 20) {
-                gaming = `One match of <span class="glitch-hover">Valorant</span>.`;
-                gamingDesc = `~30 minutes per match. You can clutch the round but not your uptime.`;
+                const eldenRuns = Math.floor(minutes / eldenRingSpeedrun);
+                gaming = `Speedrun <span class="glitch-hover">Elden Ring ${eldenRuns} times</span>.`;
+                gamingDesc = `${eldenRuns} complete speedruns at 30 min each. Git gud indeed.`;
+            } else if (minutes >= valorantMatch) {
+                const matches = Math.floor(minutes / valorantMatch);
+                gaming = `Play <span class="glitch-hover">${matches} Valorant matches</span>.`;
+                gamingDesc = `${matches} matches at ~40 min each. You can clutch rounds but not uptime.`;
+            } else if (minutes >= rocketLeagueGame) {
+                const games = Math.floor(minutes / rocketLeagueGame);
+                gaming = `<span class="glitch-hover">${games} Rocket League games</span>.`;
+                gamingDesc = `What a save! What a save! x${games}`;
             } else {
-                gaming = `One quick game of <span class="glitch-hover">Among Us</span>.`;
-                gamingDesc = `Your infrastructure is sus, and you've only got ${Math.floor(minutes)} minutes to find out why.`;
+                gaming = `One <span class="glitch-hover">Among Us</span> round.`;
+                gamingDesc = `Your infrastructure is sus.`;
             }
 
-            // Food comparisons
-            if (hours >= 12) {
-                food = `Smoke a <span class="glitch-hover">competition-level brisket</span>.`;
-                foodDesc = `The real low-and-slow: 12-16 hours for that perfect bark. Serve it at the postmortem.`;
-            } else if (hours >= 8) {
-                food = `Slow-cook a <span class="glitch-hover">perfect brisket</span> from start to finish.`;
-                foodDesc = `A proper Texas-style brisket takes 8-12 hours. Services are down, but dinner will be legendary.`;
-            } else if (hours >= 4) {
-                food = `Make <span class="glitch-hover">homemade pasta</span> from scratch, sauce included.`;
-                foodDesc = `Rolling dough, slow-simmering sauce. About 4 hours for restaurant-quality carbs.`;
-            } else if (hours >= 2) {
-                food = `Bake a <span class="glitch-hover">sourdough loaf</span> (if you prepped the starter).`;
-                foodDesc = `2-3 hours of active baking time. Your bread will rise, even if your servers won't.`;
-            } else if (hours >= 1) {
-                food = `Cook a proper <span class="glitch-hover">Sunday roast</span>.`;
-                foodDesc = `About an hour for a decent roast chicken with all the trimmings.`;
-            } else if (minutes >= 20) {
-                food = `Make a proper <span class="glitch-hover">omelette</span>.`;
-                foodDesc = `${Math.floor(minutes)} minutes. Gordon Ramsay would still call it raw.`;
+            // Food - with multipliers
+            const brisket = 10 * 60; // minutes
+            const sourdough = 180;
+            const omelette = 15;
+
+            if (minutes >= brisket * 2) {
+                const briskets = Math.floor(minutes / brisket);
+                food = `Smoke <span class="glitch-hover">${briskets} briskets</span> back-to-back.`;
+                foodDesc = `${briskets} Texas-style briskets. Feed the whole company at the postmortem.`;
+            } else if (minutes >= brisket) {
+                food = `Slow-cook a <span class="glitch-hover">perfect brisket</span>.`;
+                foodDesc = `10+ hours low-and-slow. Dinner will be legendary.`;
+            } else if (minutes >= sourdough) {
+                const loaves = Math.floor(minutes / sourdough);
+                food = `Bake <span class="glitch-hover">${loaves} sourdough ${loaves > 1 ? 'loaves' : 'loaf'}</span>.`;
+                foodDesc = `${loaves} artisan ${loaves > 1 ? 'loaves' : 'loaf'}. Your bread rises, servers don't.`;
+            } else if (minutes >= omelette) {
+                const omelettes = Math.floor(minutes / omelette);
+                food = `Make <span class="glitch-hover">${omelettes} omelettes</span>.`;
+                foodDesc = `${omelettes} omelettes. Gordon Ramsay might approve ${omelettes > 5 ? 'one of them' : 'none'}.`;
             } else {
-                food = `Microwave some <span class="glitch-hover">instant noodles</span>.`;
-                foodDesc = `${Math.floor(minutes)} minutes. Sad desk lunch meets sad server incident.`;
+                food = `<span class="glitch-hover">Instant noodles</span>.`;
+                foodDesc = `Sad desk lunch meets sad server incident.`;
             }
 
             return { travel, travelDesc, movie, movieDesc, gaming, gamingDesc, food, foodDesc };
         }
 
-        function calculate(availability) {
-            // Clamp to valid range
-            availability = Math.max(0, Math.min(100, availability));
+        function updateCostCalculations() {
+            const downtimePercent = (100 - currentAvailability) / 100;
+            const yearlyDowntime = SECONDS_IN_YEAR * downtimePercent;
 
+            const costPerHourVal = currentRevenue / (365.2425 * 24);
+            const costPerSecondVal = costPerHourVal / 3600;
+            const annualLoss = yearlyDowntime * costPerSecondVal;
+
+            costPerHour.textContent = formatMoney(costPerHourVal);
+            costPerSecond.textContent = formatMoney(costPerSecondVal);
+            costSummary.innerHTML = `At ${currentAvailability}% availability, you could lose up to <strong>${formatMoney(annualLoss)}</strong> annually from downtime.`;
+        }
+
+        function generateBreakdownTable() {
+            const rows = [
+                { avail: 90, label: "One Nine", analogy: '"Summer Vacation"' },
+                { avail: 95, label: "One & Half", analogy: '"Part-time Job"' },
+                { avail: 99, label: "Two Nines", analogy: '"Long Weekend"' },
+                { avail: 99.9, label: "Three Nines", analogy: '"One Work Day"' },
+                { avail: 99.99, label: "Four Nines", analogy: '"Lunch Break"' },
+                { avail: 99.999, label: "Five Nines", analogy: '"Coffee Sip"' },
+                { avail: 99.9999, label: "Six Nines", analogy: '"A Sneeze"' }
+            ];
+
+            breakdownTbody.innerHTML = rows.map(row => {
+                const downtimePercent = (100 - row.avail) / 100;
+                const yearlyDowntime = SECONDS_IN_YEAR * downtimePercent;
+                const monthlyDowntime = SECONDS_IN_MONTH * downtimePercent;
+                const weeklyDowntime = SECONDS_IN_WEEK * downtimePercent;
+
+                return `<tr>
+                    <td class="avail-cell">${row.avail}% (${row.label})</td>
+                    <td>${formatDurationLong(yearlyDowntime)}</td>
+                    <td>${formatDurationLong(monthlyDowntime)}</td>
+                    <td>${formatDurationLong(weeklyDowntime)}</td>
+                    <td class="analogy-cell">${row.analogy}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function calculate(availability) {
+            availability = Math.max(0, Math.min(100, availability));
+            currentAvailability = availability;
             const downtimePercent = (100 - availability) / 100;
 
-            // Update percentage input
-            let displayValue;
-            if (Number.isInteger(availability)) {
-                displayValue = availability;
-            } else {
-                displayValue = Number(availability.toFixed(5)).toString().replace(/\.?0+$/, '');
-            }
+            let displayValue = Number.isInteger(availability)
+                ? availability
+                : Number(availability.toFixed(5)).toString().replace(/\.?0+$/, '');
             percentageInput.value = displayValue;
 
-            // Update nines badge
             ninesBadge.querySelector('span').textContent = getNinesLabel(availability);
 
-            // Update progress bar
             const progressPercent = ((availability - 90) / (99.999 - 90)) * 100;
             progressBar.style.width = `${Math.max(0, Math.min(100, progressPercent))}%`;
 
-            // Update slider labels
             updateSliderLabels(availability);
 
-            // Calculate downtime for each period
             const yearlyDowntime = SECONDS_IN_YEAR * downtimePercent;
             const monthlyDowntime = SECONDS_IN_MONTH * downtimePercent;
             const weeklyDowntime = SECONDS_IN_WEEK * downtimePercent;
             const dailyDowntime = SECONDS_IN_DAY * downtimePercent;
 
-            // Update downtime displays
             downtimeYear.textContent = formatDuration(yearlyDowntime);
             downtimeMonth.textContent = formatDuration(monthlyDowntime);
             downtimeWeek.textContent = formatDuration(weeklyDowntime);
             downtimeDay.textContent = formatDuration(dailyDowntime);
 
-            // Update progress bars
             const maxYearlyDowntime = SECONDS_IN_YEAR * 0.1;
             barYear.style.width = `${Math.min(100, (yearlyDowntime / maxYearlyDowntime) * 100)}%`;
             barMonth.style.width = `${Math.min(100, (monthlyDowntime / (SECONDS_IN_MONTH * 0.1)) * 100)}%`;
             barWeek.style.width = `${Math.min(100, (weeklyDowntime / (SECONDS_IN_WEEK * 0.1)) * 100)}%`;
             barDay.style.width = `${Math.min(100, (dailyDowntime / (SECONDS_IN_DAY * 0.1)) * 100)}%`;
 
-            // Update panic text
             panicText.innerHTML = `"You're allowed <span>${formatDuration(yearlyDowntime)}</span> of panic per year."`;
 
-            // Update humor comparisons
             const humor = getHumorComparisons(yearlyDowntime);
             humorTravel.innerHTML = humor.travel;
             humorTravelDesc.textContent = humor.travelDesc;
@@ -1457,11 +1837,22 @@
             humorGamingDesc.textContent = humor.gamingDesc;
             humorFood.innerHTML = humor.food;
             humorFoodDesc.textContent = humor.foodDesc;
+
+            updateCostCalculations();
+        }
+
+        function updateRevenueDisplay() {
+            // Slider maps 0-100 to $1M-$500M (logarithmic-ish)
+            const sliderVal = parseFloat(revenueSlider.value);
+            const minRev = 1000000;
+            const maxRev = 500000000;
+            currentRevenue = minRev * Math.pow(maxRev / minRev, sliderVal / 100);
+            revenueDisplay.textContent = formatMoney(currentRevenue);
+            updateCostCalculations();
         }
 
         function setAvailability(value) {
-            const sliderValue = availabilityToSlider(value);
-            slider.value = sliderValue;
+            slider.value = availabilityToSlider(value);
             calculate(value);
         }
 
@@ -1471,14 +1862,12 @@
 
         // Event listeners
         slider.addEventListener('input', function () {
-            const availability = sliderToAvailability(parseFloat(this.value));
-            calculate(availability);
+            calculate(sliderToAvailability(parseFloat(this.value)));
         });
 
         percentageInput.addEventListener('input', function () {
             let value = parseFloat(this.value);
             if (!isNaN(value)) {
-                // Update slider position
                 slider.value = availabilityToSlider(value);
                 calculate(value);
             }
@@ -1486,23 +1875,22 @@
 
         percentageInput.addEventListener('blur', function () {
             let value = parseFloat(this.value);
-            if (isNaN(value) || value < 0) {
-                value = 0;
-            } else if (value > 100) {
-                value = 100;
-            }
+            if (isNaN(value) || value < 0) value = 0;
+            else if (value > 100) value = 100;
             slider.value = availabilityToSlider(Math.max(90, Math.min(99.999, value)));
             calculate(value);
         });
 
         percentageInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') {
-                this.blur();
-            }
+            if (e.key === 'Enter') this.blur();
         });
 
-        // Initial calculation
+        revenueSlider.addEventListener('input', updateRevenueDisplay);
+
+        // Initial setup
         setAvailability(99.9);
+        updateRevenueDisplay();
+        generateBreakdownTable();
     </script>
 </body>
 
