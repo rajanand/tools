@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Availability Calculator & Downtime Guide</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style>
+        /* ===== CSS RESET & BASE ===== */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ===== CSS VARIABLES ===== */
+        :root {
+            --primary: #33ffff;
+            --primary-dim: rgba(51, 255, 255, 0.1);
+            --background-dark: #16181d;
+            --card-dark: #20242c;
+            --accent-magenta: #ff00ff;
+            --accent-yellow: #ffff00;
+            --accent-green: #00ff88;
+            --accent-orange: #ff8800;
+            --border-color: #273a3a;
+            --text-white: #ffffff;
+            --text-gray-300: #d1d5db;
+            --text-gray-400: #9ca3af;
+            --text-gray-500: #6b7280;
+            --glow: 0 0 20px rgba(51, 255, 255, 0.3);
+            --glow-sm: 0 0 10px rgba(51, 255, 255, 0.3);
+        }
+
+        /* ===== BODY ===== */
+        body {
+            font-family: "Space Grotesk", sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-white);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        ::selection {
+            background-color: var(--primary);
+            color: var(--background-dark);
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            background-color: rgba(22, 24, 29, 0.8);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background-color: var(--primary-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(51, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .logo-group:hover .logo-icon {
+            border-color: var(--primary);
+            box-shadow: var(--glow);
+        }
+
+        .logo-icon .material-symbols-outlined {
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 1.125rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .logo-text span {
+            color: var(--primary);
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            height: 36px;
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background-color: var(--card-dark);
+            border: 1px solid #395656;
+            color: var(--text-gray-300);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--background-dark);
+            font-weight: 700;
+            box-shadow: var(--glow-sm);
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--glow);
+            background-color: #80ffff;
+        }
+
+        .btn .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2.5rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1024px;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        .hero-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 75%;
+            height: 75%;
+            background-color: rgba(51, 255, 255, 0.05);
+            filter: blur(100px);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 768px;
+        }
+
+        .slo-label {
+            color: var(--text-gray-400);
+            font-size: 0.875rem;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        /* ===== PERCENTAGE DISPLAY ===== */
+        .percentage-wrapper {
+            position: relative;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+        }
+
+        .percentage-input-wrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: baseline;
+        }
+
+        #percentage-input {
+            font-size: 80px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.05em;
+            background: transparent;
+            border: none;
+            color: var(--text-white);
+            text-align: right;
+            width: 280px;
+            outline: none;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            font-family: inherit;
+        }
+
+        #percentage-input:focus {
+            text-shadow: 0 0 20px rgba(51, 255, 255, 0.4);
+        }
+
+        #percentage-input:hover {
+            text-shadow: 0 0 20px rgba(51, 255, 255, 0.4);
+        }
+
+        .percentage-symbol {
+            font-size: 80px;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .edit-hint {
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: var(--text-gray-500);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .percentage-wrapper:hover .edit-hint {
+            opacity: 1;
+        }
+
+        .nines-badge {
+            position: absolute;
+            right: -80px;
+            top: 16px;
+            transform: rotate(12deg);
+            background-color: var(--card-dark);
+            border: 1px solid rgba(51, 255, 255, 0.3);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            box-shadow: var(--glow-sm);
+            white-space: nowrap;
+        }
+
+        .nines-badge span {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* ===== SLIDER MODULE ===== */
+        .slider-module {
+            width: 100%;
+            margin-top: 2.5rem;
+            padding: 1.5rem;
+            background-color: rgba(32, 36, 44, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            backdrop-filter: blur(4px);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+
+        .slider-module:hover {
+            border-color: rgba(51, 255, 255, 0.3);
+        }
+
+        .slider-progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background-color: var(--primary);
+            box-shadow: var(--glow);
+            opacity: 0.2;
+            transition: width 0.1s ease;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-label {
+            font-size: 0.875rem;
+            color: var(--text-gray-400);
+            font-family: monospace;
+        }
+
+        .strict-mode {
+            font-size: 0.875rem;
+            color: var(--primary);
+            font-family: monospace;
+            background-color: var(--primary-dim);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            border: 1px solid rgba(51, 255, 255, 0.2);
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 32px;
+            display: flex;
+            align-items: center;
+        }
+
+        .slider-ticks {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 4px;
+            pointer-events: none;
+            opacity: 0.3;
+        }
+
+        .slider-ticks .tick {
+            width: 1px;
+            background-color: white;
+        }
+
+        .slider-ticks .tick.major {
+            height: 12px;
+        }
+
+        .slider-ticks .tick.minor {
+            height: 8px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            background: var(--border-color);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+            z-index: 20;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--primary);
+            transition: transform 0.1s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--text-gray-500);
+            font-family: monospace;
+        }
+
+        .slider-labels span {
+            cursor: pointer;
+            transition: color 0.2s ease;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .slider-labels span:hover {
+            color: var(--primary);
+            background-color: var(--primary-dim);
+        }
+
+        .slider-labels span.active {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* ===== PANIC TEXT ===== */
+        .panic-text {
+            margin-top: 1.5rem;
+            color: var(--text-gray-300);
+            font-size: 1.125rem;
+            max-width: 576px;
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .panic-text span {
+            color: var(--text-white);
+            font-weight: 700;
+            border-bottom: 1px solid var(--primary);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        /* ===== DOWNTIME CARDS GRID ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            #percentage-input {
+                font-size: 120px;
+                width: 420px;
+            }
+
+            .percentage-symbol {
+                font-size: 120px;
+            }
+
+            .nines-badge {
+                top: 32px;
+                right: -90px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .downtime-card {
+            background-color: var(--card-dark);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.2s ease;
+        }
+
+        .downtime-card:hover {
+            border-color: rgba(51, 255, 255, 0.5);
+        }
+
+        .card-icon {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 1rem;
+            opacity: 0.2;
+            transition: opacity 0.2s ease;
+        }
+
+        .downtime-card:hover .card-icon {
+            opacity: 1;
+        }
+
+        .card-icon .material-symbols-outlined {
+            font-size: 36px;
+            color: var(--text-white);
+            transition: color 0.2s ease;
+        }
+
+        .downtime-card:hover .card-icon .material-symbols-outlined {
+            color: var(--primary);
+        }
+
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .card-label {
+            font-size: 0.75rem;
+            font-family: monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-gray-400);
+            margin-bottom: 0.25rem;
+        }
+
+        .card-value {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text-white);
+            transition: color 0.2s ease;
+        }
+
+        .downtime-card:hover .card-value {
+            color: var(--primary);
+        }
+
+        .card-bar {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .card-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), #3b82f6);
+            box-shadow: var(--glow-sm);
+            transition: width 0.2s ease;
+        }
+
+        .card-desc {
+            font-size: 0.75rem;
+            color: var(--text-gray-500);
+        }
+
+        /* ===== HUMOR SECTION ===== */
+        .humor-section {
+            margin-top: 2rem;
+        }
+
+        .humor-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .humor-header .material-symbols-outlined {
+            color: var(--accent-magenta);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .humor-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .humor-header h2 span {
+            color: var(--text-gray-500);
+            font-size: 0.875rem;
+            font-weight: 400;
+            margin-left: 0.5rem;
+        }
+
+        .humor-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .humor-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .humor-card {
+            position: relative;
+            background-color: #1a1d24;
+            border-radius: 12px;
+            padding: 2rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .humor-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .humor-card.magenta {
+            border: 1px solid rgba(255, 0, 255, 0.3);
+        }
+
+        .humor-card.magenta:hover {
+            border-color: var(--accent-magenta);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.15);
+        }
+
+        .humor-card.yellow {
+            border: 1px solid rgba(255, 255, 0, 0.3);
+        }
+
+        .humor-card.yellow:hover {
+            border-color: var(--accent-yellow);
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.15);
+        }
+
+        .humor-card.green {
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .humor-card.green:hover {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.15);
+        }
+
+        .humor-card.orange {
+            border: 1px solid rgba(255, 136, 0, 0.3);
+        }
+
+        .humor-card.orange:hover {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 20px rgba(255, 136, 0, 0.15);
+        }
+
+        .humor-card-glow {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            filter: blur(40px);
+            transition: background-color 0.3s ease;
+        }
+
+        .humor-card.magenta .humor-card-glow {
+            background-color: rgba(255, 0, 255, 0.05);
+        }
+
+        .humor-card.magenta:hover .humor-card-glow {
+            background-color: rgba(255, 0, 255, 0.1);
+        }
+
+        .humor-card.yellow .humor-card-glow {
+            background-color: rgba(255, 255, 0, 0.05);
+        }
+
+        .humor-card.yellow:hover .humor-card-glow {
+            background-color: rgba(255, 255, 0, 0.1);
+        }
+
+        .humor-card.green .humor-card-glow {
+            background-color: rgba(0, 255, 136, 0.05);
+        }
+
+        .humor-card.green:hover .humor-card-glow {
+            background-color: rgba(0, 255, 136, 0.1);
+        }
+
+        .humor-card.orange .humor-card-glow {
+            background-color: rgba(255, 136, 0, 0.05);
+        }
+
+        .humor-card.orange:hover .humor-card-glow {
+            background-color: rgba(255, 136, 0, 0.1);
+        }
+
+        .humor-card-content {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .humor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            width: fit-content;
+        }
+
+        .humor-card.magenta .humor-badge {
+            background-color: rgba(255, 0, 255, 0.1);
+            border: 1px solid rgba(255, 0, 255, 0.2);
+        }
+
+        .humor-card.magenta .humor-badge .material-symbols-outlined,
+        .humor-card.magenta .humor-badge span {
+            color: var(--accent-magenta);
+        }
+
+        .humor-card.yellow .humor-badge {
+            background-color: rgba(255, 255, 0, 0.1);
+            border: 1px solid rgba(255, 255, 0, 0.2);
+        }
+
+        .humor-card.yellow .humor-badge .material-symbols-outlined,
+        .humor-card.yellow .humor-badge span {
+            color: var(--accent-yellow);
+        }
+
+        .humor-card.green .humor-badge {
+            background-color: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .humor-card.green .humor-badge .material-symbols-outlined,
+        .humor-card.green .humor-badge span {
+            color: var(--accent-green);
+        }
+
+        .humor-card.orange .humor-badge {
+            background-color: rgba(255, 136, 0, 0.1);
+            border: 1px solid rgba(255, 136, 0, 0.2);
+        }
+
+        .humor-card.orange .humor-badge .material-symbols-outlined,
+        .humor-card.orange .humor-badge span {
+            color: var(--accent-orange);
+        }
+
+        .humor-badge .material-symbols-outlined {
+            font-size: 14px;
+        }
+
+        .humor-badge span {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .humor-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .humor-card.magenta h3 span {
+            color: var(--accent-magenta);
+        }
+
+        .humor-card.yellow h3 span {
+            color: var(--accent-yellow);
+        }
+
+        .humor-card.green h3 span {
+            color: var(--accent-green);
+        }
+
+        .humor-card.orange h3 span {
+            color: var(--accent-orange);
+        }
+
+        .humor-card p {
+            font-size: 0.875rem;
+            color: var(--text-gray-400);
+        }
+
+        .glitch-hover {
+            cursor: default;
+            transition: all 0.1s ease;
+        }
+
+        .glitch-hover:hover {
+            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
+        }
+
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+            }
+
+            20% {
+                transform: translate(-2px, 2px);
+            }
+
+            40% {
+                transform: translate(-2px, -2px);
+            }
+
+            60% {
+                transform: translate(2px, 2px);
+            }
+
+            80% {
+                transform: translate(2px, -2px);
+            }
+
+            100% {
+                transform: translate(0);
+            }
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--background-dark);
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .footer-inner {
+                flex-direction: row;
+            }
+        }
+
+        .footer-text {
+            font-size: 0.875rem;
+            color: var(--text-gray-500);
+        }
+
+        .footer-text span {
+            font-weight: 700;
+            color: var(--text-white);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: var(--text-gray-500);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .footer-links a span:first-child {
+            font-size: 0.75rem;
+            font-family: monospace;
+        }
+
+        .footer-links a .material-symbols-outlined {
+            font-size: 14px;
+        }
+
+        /* ===== UTILITY: HIDE ON MOBILE ===== */
+        @media (max-width: 639px) {
+            .hide-mobile {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <header>
+        <div class="header-inner">
+            <div class="logo-group">
+                <div class="logo-icon">
+                    <span class="material-symbols-outlined">calculate</span>
+                </div>
+                <h1 class="logo-text">Availability<span>Calculator</span></h1>
+            </div>
+            <div class="header-buttons">
+                <button class="btn btn-secondary hide-mobile" onclick="resetCalculator()">
+                    <span class="material-symbols-outlined">restart_alt</span>
+                    Reset
+                </button>
+                <button class="btn btn-primary">
+                    <span class="material-symbols-outlined">share</span>
+                    Share
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <!-- Hero Input Section -->
+            <section class="hero">
+                <div class="hero-glow"></div>
+                <div class="hero-content">
+                    <h2 class="slo-label">Target Service Level Objective (SLO)</h2>
+
+                    <!-- Massive Percentage Display - Now Editable -->
+                    <div class="percentage-wrapper">
+                        <div class="percentage-input-wrapper">
+                            <input type="text" id="percentage-input" value="99.9" />
+                            <span class="percentage-symbol">%</span>
+                        </div>
+                        <div class="nines-badge" id="nines-badge">
+                            <span>Three Nines</span>
+                        </div>
+                        <div class="edit-hint">Click to edit value directly</div>
+                    </div>
+
+                    <!-- Interactive Slider Module -->
+                    <div class="slider-module">
+                        <div class="slider-progress" id="progress-bar" style="width: 75%"></div>
+                        <div class="slider-header">
+                            <label class="slider-label" for="availability-slider">ADJUST AVAILABILITY</label>
+                            <span class="strict-mode">NON-LINEAR SCALE</span>
+                        </div>
+                        <div class="slider-container">
+                            <div class="slider-ticks">
+                                <div class="tick major"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick major"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick major"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick major"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick minor"></div>
+                                <div class="tick major"></div>
+                            </div>
+                            <!-- Non-linear slider: 0-100 internally, mapped to availability values -->
+                            <input id="availability-slider" type="range" min="0" max="100" step="0.1" value="50" />
+                        </div>
+                        <div class="slider-labels">
+                            <span onclick="setAvailability(90)">90%</span>
+                            <span onclick="setAvailability(99)">99%</span>
+                            <span onclick="setAvailability(99.9)" class="active">99.9%</span>
+                            <span onclick="setAvailability(99.99)">99.99%</span>
+                            <span onclick="setAvailability(99.999)">99.999%</span>
+                        </div>
+                    </div>
+
+                    <p class="panic-text" id="panic-text">
+                        "You're allowed <span>8h 45m</span> of panic per year."
+                    </p>
+                </div>
+            </section>
+
+            <!-- Downtime Dashboard Grid -->
+            <section class="cards-grid">
+                <!-- Year Card -->
+                <div class="downtime-card">
+                    <div class="card-icon">
+                        <span class="material-symbols-outlined">calendar_month</span>
+                    </div>
+                    <div class="card-content">
+                        <div>
+                            <p class="card-label">Per Year</p>
+                            <h3 class="card-value" id="downtime-year">8h 45m 36s</h3>
+                        </div>
+                        <div class="card-bar">
+                            <div class="card-bar-fill" id="bar-year" style="width: 45%"></div>
+                        </div>
+                        <p class="card-desc">Total allowed downtime annually.</p>
+                    </div>
+                </div>
+                <!-- Month Card -->
+                <div class="downtime-card">
+                    <div class="card-icon">
+                        <span class="material-symbols-outlined">date_range</span>
+                    </div>
+                    <div class="card-content">
+                        <div>
+                            <p class="card-label">Per Month</p>
+                            <h3 class="card-value" id="downtime-month">43m 48s</h3>
+                        </div>
+                        <div class="card-bar">
+                            <div class="card-bar-fill" id="bar-month" style="width: 25%"></div>
+                        </div>
+                        <p class="card-desc">Allowed monthly outage window.</p>
+                    </div>
+                </div>
+                <!-- Week Card -->
+                <div class="downtime-card">
+                    <div class="card-icon">
+                        <span class="material-symbols-outlined">view_week</span>
+                    </div>
+                    <div class="card-content">
+                        <div>
+                            <p class="card-label">Per Week</p>
+                            <h3 class="card-value" id="downtime-week">10m 04s</h3>
+                        </div>
+                        <div class="card-bar">
+                            <div class="card-bar-fill" id="bar-week" style="width: 10%"></div>
+                        </div>
+                        <p class="card-desc">Weekly maintenance budget.</p>
+                    </div>
+                </div>
+                <!-- Day Card -->
+                <div class="downtime-card">
+                    <div class="card-icon">
+                        <span class="material-symbols-outlined">today</span>
+                    </div>
+                    <div class="card-content">
+                        <div>
+                            <p class="card-label">Per Day</p>
+                            <h3 class="card-value" id="downtime-day">1m 26s</h3>
+                        </div>
+                        <div class="card-bar">
+                            <div class="card-bar-fill" id="bar-day" style="width: 2%"></div>
+                        </div>
+                        <p class="card-desc">Daily incident threshold.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Life Comparison / Humor Section -->
+            <section class="humor-section">
+                <div class="humor-header">
+                    <span class="material-symbols-outlined">sports_esports</span>
+                    <h2>Reality Check <span>(What you can do while the server burns)</span></h2>
+                </div>
+                <div class="humor-grid">
+                    <!-- Humor Card 1 - Travel -->
+                    <div class="humor-card magenta">
+                        <div class="humor-card-glow"></div>
+                        <div class="humor-card-content">
+                            <div class="humor-badge">
+                                <span class="material-symbols-outlined">flight_takeoff</span>
+                                <span>Travel Scale</span>
+                            </div>
+                            <h3 id="humor-travel">
+                                Enough time to fly from <span class="glitch-hover">London</span> to <span
+                                    class="glitch-hover">New York</span>.
+                            </h3>
+                            <p id="humor-travel-desc">
+                                ~8 hours and 45 minutes. You could technically board a plane, cross the Atlantic, and
+                                land before your customers realize the site is back up.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Humor Card 2 - Cinema -->
+                    <div class="humor-card yellow">
+                        <div class="humor-card-glow"></div>
+                        <div class="humor-card-content">
+                            <div class="humor-badge">
+                                <span class="material-symbols-outlined">movie</span>
+                                <span>Cinema Scale</span>
+                            </div>
+                            <h3 id="humor-movie">
+                                Watch <span class="glitch-hover">LOTR: Fellowship of the Ring</span> (Extended Edition)
+                                twice.
+                            </h3>
+                            <p id="humor-movie-desc">
+                                With a runtime of 228 minutes, you can fit in two full viewings. That's a lot of walking
+                                to Mordor while your DevOps team walks through hell.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Humor Card 3 - Gaming -->
+                    <div class="humor-card green">
+                        <div class="humor-card-glow"></div>
+                        <div class="humor-card-content">
+                            <div class="humor-badge">
+                                <span class="material-symbols-outlined">videogame_asset</span>
+                                <span>Gaming Scale</span>
+                            </div>
+                            <h3 id="humor-gaming">
+                                Complete <span class="glitch-hover">Elden Ring</span> if you're really good.
+                            </h3>
+                            <p id="humor-gaming-desc">
+                                Speedrunners finish it in under 30 minutes, but for mortals, ~8 hours might get you
+                                past the first boss. Git gud while your servers are down.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Humor Card 4 - Food -->
+                    <div class="humor-card orange">
+                        <div class="humor-card-glow"></div>
+                        <div class="humor-card-content">
+                            <div class="humor-badge">
+                                <span class="material-symbols-outlined">restaurant</span>
+                                <span>Food Scale</span>
+                            </div>
+                            <h3 id="humor-food">
+                                Slow-cook a <span class="glitch-hover">perfect brisket</span> from start to finish.
+                            </h3>
+                            <p id="humor-food-desc">
+                                A proper Texas-style brisket takes 8-12 hours. Your services are down, but at least
+                                dinner will be legendary.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-text">
+                <span>Availability Calculator</span> © 2023. Built for those who fear the pager.
+            </div>
+            <div class="footer-links">
+                <a href="#">
+                    <span>GITHUB_REPO</span>
+                    <span class="material-symbols-outlined">open_in_new</span>
+                </a>
+                <a href="#">
+                    <span>STATUS_PAGE</span>
+                    <span class="material-symbols-outlined">signal_cellular_alt</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const slider = document.getElementById('availability-slider');
+        const percentageInput = document.getElementById('percentage-input');
+        const ninesBadge = document.getElementById('nines-badge');
+        const progressBar = document.getElementById('progress-bar');
+        const panicText = document.getElementById('panic-text');
+        const downtimeYear = document.getElementById('downtime-year');
+        const downtimeMonth = document.getElementById('downtime-month');
+        const downtimeWeek = document.getElementById('downtime-week');
+        const downtimeDay = document.getElementById('downtime-day');
+        const barYear = document.getElementById('bar-year');
+        const barMonth = document.getElementById('bar-month');
+        const barWeek = document.getElementById('bar-week');
+        const barDay = document.getElementById('bar-day');
+        const humorTravel = document.getElementById('humor-travel');
+        const humorTravelDesc = document.getElementById('humor-travel-desc');
+        const humorMovie = document.getElementById('humor-movie');
+        const humorMovieDesc = document.getElementById('humor-movie-desc');
+        const humorGaming = document.getElementById('humor-gaming');
+        const humorGamingDesc = document.getElementById('humor-gaming-desc');
+        const humorFood = document.getElementById('humor-food');
+        const humorFoodDesc = document.getElementById('humor-food-desc');
+        const sliderLabels = document.querySelectorAll('.slider-labels span');
+
+        // Time constants (in seconds)
+        const SECONDS_IN_YEAR = 365.2425 * 24 * 60 * 60;
+        const SECONDS_IN_MONTH = SECONDS_IN_YEAR / 12;
+        const SECONDS_IN_WEEK = 7 * 24 * 60 * 60;
+        const SECONDS_IN_DAY = 24 * 60 * 60;
+
+        // Non-linear mapping: slider position (0-100) to availability percentage
+        // The labels are at: 90%, 99%, 99.9%, 99.99%, 99.999%
+        // We want equal spacing on the slider for these key values
+        const AVAILABILITY_STOPS = [90, 99, 99.9, 99.99, 99.999];
+        const SLIDER_STOPS = [0, 25, 50, 75, 100];
+
+        function sliderToAvailability(sliderValue) {
+            // Find which segment we're in
+            for (let i = 0; i < SLIDER_STOPS.length - 1; i++) {
+                if (sliderValue <= SLIDER_STOPS[i + 1]) {
+                    const sliderRange = SLIDER_STOPS[i + 1] - SLIDER_STOPS[i];
+                    const availRange = AVAILABILITY_STOPS[i + 1] - AVAILABILITY_STOPS[i];
+                    const ratio = (sliderValue - SLIDER_STOPS[i]) / sliderRange;
+                    return AVAILABILITY_STOPS[i] + ratio * availRange;
+                }
+            }
+            return AVAILABILITY_STOPS[AVAILABILITY_STOPS.length - 1];
+        }
+
+        function availabilityToSlider(availability) {
+            // Clamp to valid range
+            availability = Math.max(90, Math.min(99.999, availability));
+
+            // Find which segment we're in
+            for (let i = 0; i < AVAILABILITY_STOPS.length - 1; i++) {
+                if (availability <= AVAILABILITY_STOPS[i + 1]) {
+                    const availRange = AVAILABILITY_STOPS[i + 1] - AVAILABILITY_STOPS[i];
+                    const sliderRange = SLIDER_STOPS[i + 1] - SLIDER_STOPS[i];
+                    const ratio = (availability - AVAILABILITY_STOPS[i]) / availRange;
+                    return SLIDER_STOPS[i] + ratio * sliderRange;
+                }
+            }
+            return 100;
+        }
+
+        function formatDuration(totalSeconds) {
+            if (totalSeconds < 1) return "< 1s";
+
+            const days = Math.floor(totalSeconds / (3600 * 24));
+            totalSeconds -= days * 3600 * 24;
+            const hours = Math.floor(totalSeconds / 3600);
+            totalSeconds -= hours * 3600;
+            const minutes = Math.floor(totalSeconds / 60);
+            totalSeconds -= minutes * 60;
+            const seconds = Math.floor(totalSeconds);
+
+            const parts = [];
+            if (days > 0) parts.push(`${days}d`);
+            if (hours > 0) parts.push(`${hours}h`);
+            if (minutes > 0) parts.push(`${minutes}m`);
+            if (seconds > 0 && parts.length < 3) parts.push(`${seconds}s`);
+
+            return parts.length > 0 ? parts.join(' ') : '< 1s';
+        }
+
+        function getNinesLabel(availability) {
+            if (availability >= 99.999) return "Five Nines";
+            if (availability >= 99.99) return "Four Nines";
+            if (availability >= 99.9) return "Three Nines";
+            if (availability >= 99) return "Two Nines";
+            return "One Nine";
+        }
+
+        function updateSliderLabels(availability) {
+            sliderLabels.forEach(label => {
+                const labelValue = parseFloat(label.textContent);
+                if (Math.abs(availability - labelValue) < 0.001) {
+                    label.classList.add('active');
+                } else {
+                    label.classList.remove('active');
+                }
+            });
+        }
+
+        function getHumorComparisons(yearlyDowntimeSeconds) {
+            const hours = yearlyDowntimeSeconds / 3600;
+            const minutes = yearlyDowntimeSeconds / 60;
+
+            let travel, travelDesc, movie, movieDesc, gaming, gamingDesc, food, foodDesc;
+
+            // Travel comparisons
+            if (hours >= 12) {
+                travel = `Enough time to fly from <span class="glitch-hover">Sydney</span> to <span class="glitch-hover">Los Angeles</span>.`;
+                travelDesc = `~${Math.floor(hours)} hours. A 14-hour flight across the Pacific. Plenty of time for an existential crisis at 30,000 feet.`;
+            } else if (hours >= 8) {
+                travel = `Enough time to fly from <span class="glitch-hover">London</span> to <span class="glitch-hover">New York</span>.`;
+                travelDesc = `~${Math.floor(hours)} hours. You could board a plane, cross the Atlantic, and land before your customers realize the site is back up.`;
+            } else if (hours >= 4) {
+                travel = `Time for a road trip from <span class="glitch-hover">LA</span> to <span class="glitch-hover">San Francisco</span>.`;
+                travelDesc = `~${Math.floor(hours)} hours. Drive up the California coast. Your site is down, but the views are nice.`;
+            } else if (hours >= 1) {
+                travel = `A quick hop from <span class="glitch-hover">NYC</span> to <span class="glitch-hover">Boston</span> by train.`;
+                travelDesc = `~${Math.floor(minutes)} minutes. Catch a quick Acela ride and stress about the incident the whole way.`;
+            } else if (minutes >= 15) {
+                travel = `A quick <span class="glitch-hover">Uber ride</span> across town.`;
+                travelDesc = `~${Math.floor(minutes)} minutes. Barely enough to get from one meeting to another.`;
+            } else {
+                travel = `Just a <span class="glitch-hover">coffee break</span>.`;
+                travelDesc = `~${Math.floor(minutes)} minutes. Barely time to brew coffee before the alerts stop.`;
+            }
+
+            // Cinema comparisons
+            if (hours >= 10) {
+                movie = `Binge the entire <span class="glitch-hover">Lord of the Rings</span> extended trilogy.`;
+                movieDesc = `All three extended editions clock in at ~11.5 hours. One ring to rule the downtime.`;
+            } else if (hours >= 7.6) {
+                movie = `Watch <span class="glitch-hover">LOTR: Fellowship of the Ring</span> (Extended Edition) twice.`;
+                movieDesc = `With a runtime of 228 minutes, you can fit in two full viewings. That's a lot of walking to Mordor.`;
+            } else if (hours >= 3.8) {
+                movie = `Binge <span class="glitch-hover">Interstellar</span> plus snack breaks.`;
+                movieDesc = `At 169 minutes, you've got time for mind-bending space travel. Time dilation included.`;
+            } else if (hours >= 2) {
+                movie = `Watch <span class="glitch-hover">The Dark Knight</span>.`;
+                movieDesc = `At 152 minutes, enough time to appreciate "why so serious" while infrastructure burns.`;
+            } else if (minutes >= 45) {
+                movie = `A few episodes of <span class="glitch-hover">The Office</span>.`;
+                movieDesc = `About ${Math.floor(minutes / 22)} episodes. That's not a lot of "That's what she said."`;
+            } else if (minutes >= 20) {
+                movie = `Watch an episode of <span class="glitch-hover">Friends</span>.`;
+                movieDesc = `One episode, one laugh track, one incident. Could this BE any more stressful?`;
+            } else {
+                movie = `Maybe a <span class="glitch-hover">YouTube video</span>.`;
+                movieDesc = `${Math.floor(minutes)} minutes. Just enough for a tutorial on "How to fix production."`;
+            }
+
+            // Gaming comparisons
+            if (hours >= 40) {
+                gaming = `Complete <span class="glitch-hover">The Witcher 3</span> main story.`;
+                gamingDesc = `At ~50 hours for the main quest, you'd be knee-deep in Gwent while your servers burn.`;
+            } else if (hours >= 15) {
+                gaming = `Finish <span class="glitch-hover">Portal 2</span> completely.`;
+                gamingDesc = `About 10-15 hours of testing chambers. The cake is still a lie, but at least you're occupied.`;
+            } else if (hours >= 8) {
+                gaming = `Complete <span class="glitch-hover">Elden Ring</span> if you're really good.`;
+                gamingDesc = `Speedrunners finish in 30 minutes, but mortals might get past the first boss. Git gud.`;
+            } else if (hours >= 3) {
+                gaming = `Complete a full <span class="glitch-hover">Civilization VI</span> game on quick settings.`;
+                gamingDesc = `Just one more turn... and one more... and your servers are still down.`;
+            } else if (hours >= 1) {
+                gaming = `A few rounds of <span class="glitch-hover">Rocket League</span>.`;
+                gamingDesc = `About ${Math.floor(minutes / 7)} games. What a save! What a save! What a save!`;
+            } else if (minutes >= 20) {
+                gaming = `One match of <span class="glitch-hover">Valorant</span>.`;
+                gamingDesc = `~30 minutes per match. You can clutch the round but not your uptime.`;
+            } else {
+                gaming = `One quick game of <span class="glitch-hover">Among Us</span>.`;
+                gamingDesc = `Your infrastructure is sus, and you've only got ${Math.floor(minutes)} minutes to find out why.`;
+            }
+
+            // Food comparisons
+            if (hours >= 12) {
+                food = `Smoke a <span class="glitch-hover">competition-level brisket</span>.`;
+                foodDesc = `The real low-and-slow: 12-16 hours for that perfect bark. Serve it at the postmortem.`;
+            } else if (hours >= 8) {
+                food = `Slow-cook a <span class="glitch-hover">perfect brisket</span> from start to finish.`;
+                foodDesc = `A proper Texas-style brisket takes 8-12 hours. Services are down, but dinner will be legendary.`;
+            } else if (hours >= 4) {
+                food = `Make <span class="glitch-hover">homemade pasta</span> from scratch, sauce included.`;
+                foodDesc = `Rolling dough, slow-simmering sauce. About 4 hours for restaurant-quality carbs.`;
+            } else if (hours >= 2) {
+                food = `Bake a <span class="glitch-hover">sourdough loaf</span> (if you prepped the starter).`;
+                foodDesc = `2-3 hours of active baking time. Your bread will rise, even if your servers won't.`;
+            } else if (hours >= 1) {
+                food = `Cook a proper <span class="glitch-hover">Sunday roast</span>.`;
+                foodDesc = `About an hour for a decent roast chicken with all the trimmings.`;
+            } else if (minutes >= 20) {
+                food = `Make a proper <span class="glitch-hover">omelette</span>.`;
+                foodDesc = `${Math.floor(minutes)} minutes. Gordon Ramsay would still call it raw.`;
+            } else {
+                food = `Microwave some <span class="glitch-hover">instant noodles</span>.`;
+                foodDesc = `${Math.floor(minutes)} minutes. Sad desk lunch meets sad server incident.`;
+            }
+
+            return { travel, travelDesc, movie, movieDesc, gaming, gamingDesc, food, foodDesc };
+        }
+
+        function calculate(availability) {
+            // Clamp to valid range
+            availability = Math.max(0, Math.min(100, availability));
+
+            const downtimePercent = (100 - availability) / 100;
+
+            // Update percentage input
+            let displayValue;
+            if (Number.isInteger(availability)) {
+                displayValue = availability;
+            } else {
+                displayValue = Number(availability.toFixed(5)).toString().replace(/\.?0+$/, '');
+            }
+            percentageInput.value = displayValue;
+
+            // Update nines badge
+            ninesBadge.querySelector('span').textContent = getNinesLabel(availability);
+
+            // Update progress bar
+            const progressPercent = ((availability - 90) / (99.999 - 90)) * 100;
+            progressBar.style.width = `${Math.max(0, Math.min(100, progressPercent))}%`;
+
+            // Update slider labels
+            updateSliderLabels(availability);
+
+            // Calculate downtime for each period
+            const yearlyDowntime = SECONDS_IN_YEAR * downtimePercent;
+            const monthlyDowntime = SECONDS_IN_MONTH * downtimePercent;
+            const weeklyDowntime = SECONDS_IN_WEEK * downtimePercent;
+            const dailyDowntime = SECONDS_IN_DAY * downtimePercent;
+
+            // Update downtime displays
+            downtimeYear.textContent = formatDuration(yearlyDowntime);
+            downtimeMonth.textContent = formatDuration(monthlyDowntime);
+            downtimeWeek.textContent = formatDuration(weeklyDowntime);
+            downtimeDay.textContent = formatDuration(dailyDowntime);
+
+            // Update progress bars
+            const maxYearlyDowntime = SECONDS_IN_YEAR * 0.1;
+            barYear.style.width = `${Math.min(100, (yearlyDowntime / maxYearlyDowntime) * 100)}%`;
+            barMonth.style.width = `${Math.min(100, (monthlyDowntime / (SECONDS_IN_MONTH * 0.1)) * 100)}%`;
+            barWeek.style.width = `${Math.min(100, (weeklyDowntime / (SECONDS_IN_WEEK * 0.1)) * 100)}%`;
+            barDay.style.width = `${Math.min(100, (dailyDowntime / (SECONDS_IN_DAY * 0.1)) * 100)}%`;
+
+            // Update panic text
+            panicText.innerHTML = `"You're allowed <span>${formatDuration(yearlyDowntime)}</span> of panic per year."`;
+
+            // Update humor comparisons
+            const humor = getHumorComparisons(yearlyDowntime);
+            humorTravel.innerHTML = humor.travel;
+            humorTravelDesc.textContent = humor.travelDesc;
+            humorMovie.innerHTML = humor.movie;
+            humorMovieDesc.textContent = humor.movieDesc;
+            humorGaming.innerHTML = humor.gaming;
+            humorGamingDesc.textContent = humor.gamingDesc;
+            humorFood.innerHTML = humor.food;
+            humorFoodDesc.textContent = humor.foodDesc;
+        }
+
+        function setAvailability(value) {
+            const sliderValue = availabilityToSlider(value);
+            slider.value = sliderValue;
+            calculate(value);
+        }
+
+        function resetCalculator() {
+            setAvailability(99.9);
+        }
+
+        // Event listeners
+        slider.addEventListener('input', function () {
+            const availability = sliderToAvailability(parseFloat(this.value));
+            calculate(availability);
+        });
+
+        percentageInput.addEventListener('input', function () {
+            let value = parseFloat(this.value);
+            if (!isNaN(value)) {
+                // Update slider position
+                slider.value = availabilityToSlider(value);
+                calculate(value);
+            }
+        });
+
+        percentageInput.addEventListener('blur', function () {
+            let value = parseFloat(this.value);
+            if (isNaN(value) || value < 0) {
+                value = 0;
+            } else if (value > 100) {
+                value = 100;
+            }
+            slider.value = availabilityToSlider(Math.max(90, Math.min(99.999, value)));
+            calculate(value);
+        });
+
+        percentageInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                this.blur();
+            }
+        });
+
+        // Initial calculation
+        setAvailability(99.9);
+    </script>
+</body>
+
+</html>
