@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rajanand Tools · Simple, Fast, Privacy-Focused</title>
+  <meta name="description"
+    content="A curated collection of essential web tools for developers and creators. No tracking, no hassle." />
+
+  <link rel="icon" href="https://rajanand.org/favicon.ico" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="grid-container" id="gridContainer"></div>
+
+  <div class="background-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <header class="navbar">
+    <div class="container">
+      <a href="/" class="logo">
+        <span class="logo-icon"><i class="fa-solid fa-toolbox"></i></span>
+        <span class="logo-text">Rajanand Tools</span>
+      </a>
+      <div class="nav-links">
+        <a href="https://github.com/rajanand/tools" class="nav-item" title="GitHub Source">
+          <i class="fa-brands fa-github"></i>
+        </a>
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle Theme">
+          <i class="fa-regular fa-moon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1>Essential Tools for <span class="gradient-text">Creators</span></h1>
+          <p class="hero-subtitle">Simple, fast, and privacy-focused web tools designed to make your daily tasks easier.
+            No signups, no tracking, just tools.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tools-grid-section">
+      <div class="container">
+        <div class="tools-grid">
+          <!-- Availability Calculator -->
+          <a href="./availability-calculator/" class="tool-card">
+            <div class="tool-icon-wrapper calc">
+              <i class="fa-solid fa-percent"></i>
+            </div>
+            <h3>Availability Calculator</h3>
+            <p>Calculate uptime percentages, SLA requirements, and downtime budgets with ease.</p>
+            <div class="tool-tags">
+              <span>Uptime</span>
+              <span>SLA</span>
+            </div>
+          </a>
+
+          <!-- Diff Checker -->
+          <a href="./diff-checker/" class="tool-card">
+            <div class="tool-icon-wrapper diff">
+              <i class="fa-solid fa-equals"></i>
+            </div>
+            <h3>Diff Checker</h3>
+            <p>Compare text or files to find differences. Supports side-by-side and inline views.</p>
+            <div class="tool-tags">
+              <span>DevTools</span>
+              <span>Text</span>
+            </div>
+          </a>
+
+          <!-- Image Compressor -->
+          <a href="./image-compressor/" class="tool-card">
+            <div class="tool-icon-wrapper image">
+              <i class="fa-solid fa-file-image"></i>
+            </div>
+            <h3>Image Compressor</h3>
+            <p>Optimize and shrink your image file sizes instantly without compromising quality.</p>
+            <div class="tool-tags">
+              <span>Images</span>
+              <span>Optimization</span>
+            </div>
+          </a>
+
+          <!-- Pomodoro Timer -->
+          <a href="./pomodoro-timer/" class="tool-card">
+            <div class="tool-icon-wrapper timer">
+              <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+            <h3>Pomodoro Timer</h3>
+            <p>Stay focused and productive with a clean, customizable Pomodoro timer interface.</p>
+            <div class="tool-tags">
+              <span>Productivity</span>
+              <span>Time</span>
+            </div>
+          </a>
+
+          <!-- Tweet Image Generator -->
+          <a href="./tweet-image-generator/" class="tool-card">
+            <div class="tool-icon-wrapper tweet">
+              <i class="fa-brands fa-x-twitter"></i>
+            </div>
+            <h3>Tweet Image Generator</h3>
+            <p>Turn your tweets into beautiful, sharable images for Instagram, LinkedIn, and more.</p>
+            <div class="tool-tags">
+              <span>Social</span>
+              <span>Images</span>
+            </div>
+          </a>
+
+          <!-- Word Counter -->
+          <a href="./word-count/" class="tool-card">
+            <div class="tool-icon-wrapper word">
+              <i class="fa-solid fa-align-left"></i>
+            </div>
+            <h3>Word Counter</h3>
+            <p>Get instant statistics on word count, characters, sentences, and estimated reading time.</p>
+            <div class="tool-tags">
+              <span>Writing</span>
+              <span>Utility</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-info">
+          <p>&copy; 2026 Rajanand Tools. Built for speed and privacy.</p>
+        </div>
+        <div class="footer-socials">
+          <a href="https://rajanand.org" title="Website"><i class="fa-solid fa-globe"></i></a>
+          <a href="https://x.com/iRajanand" title="X"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="https://github.com/rajanand" title="GitHub"><i class="fa-brands fa-github"></i></a>
+          <a href="https://rajanand.substack.com" title="Substack"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
